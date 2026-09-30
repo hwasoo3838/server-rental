@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Ellion 방문자 대시보드</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Pretendard, Inter, system-ui, sans-serif; background: #0b0f0d; color: #e8f1ec; }
+    header { padding: 20px 28px; border-bottom: 1px solid #1d2a24; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+    header h1 { font-size: 18px; margin: 0; }
+    header .sp { flex: 1; }
+    a.btn { color: #04140c; background: #5dffb0; padding: 8px 14px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
+    a.btn.ghost { background: transparent; color: #5dffb0; border: 1px solid #2a4a3a; }
+    main { padding: 20px 28px 40px; max-width: 1280px; margin: 0 auto; }
+    .frame { width: 100%; height: 78vh; min-height: 560px; border: 1px solid #1d2a24; border-radius: 12px; background: #fff; }
+    .note { color: #93a89d; font-size: 13px; line-height: 1.7; margin-top: 18px; }
+    .note code { background: #14201a; padding: 2px 6px; border-radius: 4px; color: #b8f5d6; }
+    table { border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    td, th { border: 1px solid #1d2a24; padding: 6px 10px; text-align: left; }
+    th { color: #93a89d; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ellion 방문자 대시보드</h1>
+    <span class="sp"></span>
+    <a class="btn ghost" href="https://datastudio.google.com/reporting/cbe1f895-92c4-4ee0-baf9-253691f65f0d/page/aK99F" target="_blank" rel="noopener">Looker Studio 에서 열기</a>
+    <a class="btn ghost" href="https://analytics.google.com/analytics/web/#/p556804121/reports/intelligenthome" target="_blank" rel="noopener">GA4 실시간 보기</a>
+  </header>
+  <main>
+    <iframe class="frame" title="Ellion visitors" src="https://datastudio.google.com/embed/reporting/cbe1f895-92c4-4ee0-baf9-253691f65f0d/page/aK99F" frameborder="0" allowfullscreen
+      sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+
+    <div class="note">
+      이 보고서는 <b>hwasoo3838@gmail.com</b> 계정 전용(비공개)입니다. 해당 구글 계정으로 로그인한 브라우저에서만 데이터가 보이고, 다른 방문자에게는 접근 권한 안내가 표시됩니다.<br />
+      데이터 소스: GA4 속성 <code>elliongpu.com</code> (속성 ID <code>556804121</code>, 측정 ID <code>G-0S428L9EKF</code>). 사이트 방문 후 처음 데이터가 보이기까지 수 시간이 걸릴 수 있습니다(실시간 보기는 GA4에서 즉시 확인).
+      <table>
+        <tr><th>이벤트</th><th>언제</th><th>파라미터</th></tr>
+        <tr><td><code>page_view</code>, <code>scroll</code>, <code>click</code></td><td>GA4 향상된 측정(자동)</td><td>-</td></tr>
+        <tr><td><code>open_request_form</code></td><td>서버 카드의 사용 요청 / 예약 버튼 클릭</td><td>form_type, server_id</td></tr>
+        <tr><td><code>generate_lead</code></td><td>신청 폼 제출</td><td>form_type, server_name, currency (입력값 미전송)</td></tr>
+        <tr><td><code>language_change</code></td><td>KO / EN 전환</td><td>language</td></tr>
+        <tr><td><code>currency_change</code></td><td>통화 변경</td><td>currency</td></tr>
+        <tr><td><code>filter_status</code>, <code>sort_change</code></td><td>서버 목록 필터 / 정렬</td><td>filter, sort</td></tr>
+        <tr><td><code>nav_click</code></td><td>상단 메뉴 클릭</td><td>target</td></tr>
+      </table>
+    </div>
+  </main>
+</body>
+</html>
