@@ -138,8 +138,8 @@ priceNote: {
     priceKrw: 150000,
     priceUsd: null,
     priceNote: {
-      ko: "월 150,000원 · VAT 별도",
-      en: "KRW 150,000/month · VAT excluded"
+  ko: "",
+  en: ""
     },
     os: ["Ubuntu 24.04 LTS"],
     ctaType: "request"
