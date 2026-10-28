@@ -309,3 +309,27 @@ form.req { display: grid; gap: 14px; margin-top: 18px; }
   margin-left: 3px;
   font-weight: 400;
 }
+/* 신청서 서버 가격 표시 */
+.modal-server-price {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.modal-server-price .price,
+.modal-server-price .sale-price {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.modal-server-price .launch-offer {
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.modal-server-price .price-note {
+  margin-top: 6px;
+  font-size: 12px;
+}
