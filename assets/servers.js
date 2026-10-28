@@ -30,6 +30,33 @@ window.ELGRIM_CONFIG = {
 
 /* status: "available" | "reserve" | "soldout" */
 window.SERVERS = [
+   
+  {
+    id: "ellion-xeon-gold-6154-dual",
+    accent: "ai",
+    catLabel: "CPU · Bare Metal",
+    name: { ko: "CPU 서버 · Xeon Gold 6154 ×2", en: "CPU Server · Dual Xeon Gold 6154" },
+    location: { ko: "KR · 다우IDC", en: "KR · Korea IDC" },
+    status: "reserve",
+    tagline: {
+      ko: "36코어 72스레드, 251GiB RAM의 듀얼 Xeon 물리 서버입니다. 가상화, 데이터 처리 및 CPU 기반 워크로드에 적합합니다.",
+      en: "Dual Xeon bare metal with 36 cores, 72 threads and 251 GiB RAM for virtualization, data processing and CPU workloads.",
+    },
+    specs: [
+      { k: "CPU", ko: "Intel Xeon Gold 6154 ×2 · 36코어 / 72스레드 (3.0 / 3.7 GHz)", en: "Intel Xeon Gold 6154 ×2 · 36 cores / 72 threads (3.0 / 3.7 GHz)" },
+      { k: "GPU", ko: "연산용 GPU 없음", en: "No compute GPU" },
+      { k: "RAM", ko: "251 GiB (약 256GB급)", en: "251 GiB (approx. 256 GB class)" },
+      { k: "Storage", ko: "447GB + 1.8TB RAID 논리 볼륨 · 실제 RAID 레벨 확인 필요", en: "447 GB + 1.8 TB RAID logical volumes · RAID level to be verified" },
+      { k: "Network", ko: "10GbE 포트 ×2 + 1GbE 포트 ×2 · 외부 회선 속도 별도 확인", en: "2× 10GbE + 2× 1GbE ports · external bandwidth to be confirmed" },
+      { k: "Access", ko: "Ubuntu 24.04.3 LTS · SSH", en: "Ubuntu 24.04.3 LTS · SSH" },
+    ],
+    priceKrw: null,
+    priceUsd: null,
+    priceNote: { ko: "월 단위 · 가격 및 인도 일정 문의", en: "Monthly · ask for pricing and provisioning date" },
+    os: ["Ubuntu 24.04 LTS"],
+    ctaType: "reserve",
+  },
+
   {
     id: "elgrim-gfx-a4000",
     accent: "gpu",
