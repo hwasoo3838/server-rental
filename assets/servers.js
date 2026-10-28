@@ -37,7 +37,7 @@ window.SERVERS = [
     catLabel: "CPU · Bare Metal",
     name: { ko: "CPU 서버 · Xeon Gold 6154 ×2", en: "CPU Server · Dual Xeon Gold 6154" },
     location: { ko: "KR · 다우IDC", en: "KR · Korea IDC" },
-    status: "abailable",
+    status: "available",
     tagline: {
       ko: "36코어 72스레드, 251GiB RAM의 듀얼 Xeon 물리 서버입니다. 가상화, 데이터 처리 및 CPU 기반 워크로드에 적합합니다.",
       en: "Dual Xeon bare metal with 36 cores, 72 threads and 251 GiB RAM for virtualization, data processing and CPU workloads.",
@@ -85,7 +85,66 @@ priceNote: {
     os: ["Ubuntu 24.04 LTS", "Ubuntu 22.04 LTS", "Debian 12", "Rocky Linux 9", "Proxmox VE 8", "Windows Server (ask)"],
     ctaType: "request",
   },
+ 
   {
+    id: "ellion-web-db-6140",
+    accent: "ai",
+    catLabel: "CPU · Web & Database",
+    name: {
+      ko: "웹·DB 서버 · Xeon Gold 6140",
+      en: "Web & Database Server · Xeon Gold 6140"
+    },
+    location: {
+      ko: "KR · 다우IDC",
+      en: "KR · Korea IDC"
+    },
+    status: "available",
+    tagline: {
+      ko: "18코어 36스레드 Xeon CPU와 125GiB RAM을 갖춘 웹·데이터베이스 서버입니다. Docker, 웹 애플리케이션 및 개발 환경에 적합합니다.",
+      en: "Xeon server with 18 cores, 36 threads and 125 GiB RAM, suitable for web applications, databases, Docker and development."
+    },
+    specs: [
+      {
+        k: "CPU",
+        ko: "Intel Xeon Gold 6140 · 18코어 / 36스레드 (2.3 / 3.7 GHz)",
+        en: "Intel Xeon Gold 6140 · 18 cores / 36 threads (2.3 / 3.7 GHz)"
+      },
+      {
+        k: "GPU",
+        ko: "연산용 GPU 없음",
+        en: "No compute GPU"
+      },
+      {
+        k: "RAM",
+        ko: "125GiB (약 128GB급)",
+        en: "125 GiB (approx. 128 GB class)"
+      },
+      {
+        k: "Storage",
+        ko: "OS 약 898GB + 데이터 약 1.6TB",
+        en: "Approx. 898 GB OS + 1.6 TB data"
+      },
+      {
+        k: "Network",
+        ko: "인터넷 10Mbps 공유 · 실제 속도 및 보장 대역폭 확인 필요",
+        en: "10Mbps shared Internet · actual speed and guaranteed bandwidth to be verified"
+      },
+      {
+        k: "Access",
+        ko: "Linux · SSH (OS 변경 협의)",
+        en: "Linux · SSH (OS changes on request)"
+      }
+    ],
+    priceKrw: 150000,
+    priceUsd: null,
+    priceNote: {
+      ko: "월 150,000원 · VAT 별도",
+      en: "KRW 150,000/month · VAT excluded"
+    },
+    os: ["Ubuntu 24.04 LTS"],
+    ctaType: "request"
+  },
+ {
     id: "elgrim-mi325x-8",
     accent: "ai",
     catLabel: "AI · 8x MI325X",
