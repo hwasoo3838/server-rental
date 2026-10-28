@@ -279,3 +279,33 @@ form.req { display: grid; gap: 14px; margin-top: 18px; }
   .grid-4, .steps { grid-template-columns: 1fr; }
   .specs { grid-template-columns: 72px 1fr; }
 }
+/* Xeon launch discount */
+.launch-offer {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgba(69, 255, 170, 0.12);
+  color: #55ffb2;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.original-price {
+  color: #8e99b5;
+  font-size: 15px;
+  text-decoration: line-through;
+}
+
+.sale-price {
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.sale-price small,
+.original-price small {
+  font-size: 12px;
+  margin-left: 3px;
+  font-weight: 400;
+}
