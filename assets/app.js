@@ -247,8 +247,25 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
     const p = Object.fromEntries(new FormData(form).entries());
     return {
       ...p,
-      gpuCount: current.showGpu ? p.gpuCount : "",
-      lang, currency,
+     gpuCount: current.showGpu ? p.gpuCount : "",
+lang,
+currency,
+monthlyPrice: current.server.id === "ellion-xeon-gold-6154-dual"
+  ? (currency === "KRW" ? "290,000 KRW" : "207 USD")
+  : (currency === "KRW"
+      ? (current.server.priceKrw != null
+          ? current.server.priceKrw.toLocaleString("ko-KR") + " KRW"
+          : "Contact us")
+      : (current.server.priceUsd != null
+          ? current.server.priceUsd.toLocaleString("en-US") + " USD"
+          : "Contact us")),
+regularPrice: current.server.id === "ellion-xeon-gold-6154-dual"
+  ? (currency === "KRW" ? "350,000 KRW" : "250 USD")
+  : "",
+priceCondition: current.server.id === "ellion-xeon-gold-6154-dual"
+  ? "Launch offer: first 3 months, then regular price"
+  : "Standard monthly rate",
+vat: "Excluded",
       timestamp: new Date().toISOString(),
       page: location.href,
       referrer: document.referrer || "",
@@ -265,8 +282,12 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
   const mailSubject = (p) => `${t(isR(p) ? "mail.subject.reserve" : "mail.subject.request")} ${p.serverName} — ${p.email}`;
   const mailFields = (p) => ({
     Type: isR(p) ? "Reservation (upcoming)" : "Access request",
-    Server: `${p.serverName} (${p.serverId})`,
-    Email: p.email,
+Server: `${p.serverName} (${p.serverId})`,
+"Monthly Price": p.monthlyPrice,
+"Regular Price": p.regularPrice,
+"Price Condition": p.priceCondition,
+"VAT": p.vat,
+Email: p.email,
     Name: p.name || "-",
     OS: p.os,
     Purpose: p.purpose,
