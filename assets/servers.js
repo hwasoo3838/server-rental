@@ -37,7 +37,7 @@ window.SERVERS = [
     catLabel: "CPU · Bare Metal",
     name: { ko: "CPU 서버 · Xeon Gold 6154 ×2", en: "CPU Server · Dual Xeon Gold 6154" },
     location: { ko: "KR · 다우IDC", en: "KR · Korea IDC" },
-    status: "reserve",
+    status: "abailable",
     tagline: {
       ko: "36코어 72스레드, 251GiB RAM의 듀얼 Xeon 물리 서버입니다. 가상화, 데이터 처리 및 CPU 기반 워크로드에 적합합니다.",
       en: "Dual Xeon bare metal with 36 cores, 72 threads and 251 GiB RAM for virtualization, data processing and CPU workloads.",
@@ -47,14 +47,17 @@ window.SERVERS = [
       { k: "GPU", ko: "연산용 GPU 없음", en: "No compute GPU" },
       { k: "RAM", ko: "251 GiB (약 256GB급)", en: "251 GiB (approx. 256 GB class)" },
       { k: "Storage", ko: "447GB + 1.8TB RAID 논리 볼륨 · 실제 RAID 레벨 확인 필요", en: "447 GB + 1.8 TB RAID logical volumes · RAID level to be verified" },
-      { k: "Network", ko: "10GbE 포트 ×2 + 1GbE 포트 ×2 · 외부 회선 속도 별도 확인", en: "2× 10GbE + 2× 1GbE ports · external bandwidth to be confirmed" },
+      { k: "Network", ko: "10GbE 포트 ×2 + 1GbE 포트 ×2 · 인터넷 10Mbps 공유", en: "2×10GbE + 2×1GbE ports · 10Mbps shared Internet" },
       { k: "Access", ko: "Ubuntu 24.04.3 LTS · SSH", en: "Ubuntu 24.04.3 LTS · SSH" },
     ],
-    priceKrw: null,
-    priceUsd: null,
-    priceNote: { ko: "월 단위 · 가격 및 인도 일정 문의", en: "Monthly · ask for pricing and provisioning date" },
+   priceKrw: 290000,
+priceUsd: 207,
+priceNote: {
+  ko: "출시 특가 · 첫 3개월 월 290,000원, 이후 월 350,000원 · VAT 별도",
+  en: "Launch offer: $207/mo for the first 3 months, then $250/mo · VAT excluded"
+},
     os: ["Ubuntu 24.04 LTS"],
-    ctaType: "reserve",
+    ctaType: "request",
   },
 
   {
@@ -73,7 +76,7 @@ window.SERVERS = [
       { k: "GPU", ko: "NVIDIA RTX A4000 16GB GDDR6 (Ampere)", en: "NVIDIA RTX A4000 16 GB GDDR6 (Ampere)" },
       { k: "RAM", ko: "251 GB DDR4 ECC", en: "251 GB DDR4 ECC" },
       { k: "Storage", ko: "3.5 TB 시스템 디스크 + 14.6 TB RAID", en: "3.5 TB system disk + 14.6 TB RAID" },
-      { k: "Network", ko: "1 Gbps · 전용 IPv4 1개", en: "1 Gbps · 1 dedicated IPv4" },
+      { k: "Network", ko: "인터넷 10Mbps 공유 · 전용 IPv4 1개", en: "10Mbps shared Internet · 1 dedicated IPv4" },
       { k: "Access", ko: "Root / SSH · 원격 재설치 지원", en: "Root / SSH · remote reinstall" },
     ],
     priceKrw: null, // 시트에서 덮어씀. null 이면 "가격 문의"
