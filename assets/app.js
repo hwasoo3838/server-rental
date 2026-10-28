@@ -208,7 +208,12 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
     const isReserve = type === "reserve";
     $("#modalLabel").textContent = t(isReserve ? "modal.reserve.label" : "modal.request.label");
     $("#modalTitle").textContent = t(isReserve ? "modal.reserve.title" : "modal.request.title");
-    $("#modalServer").innerHTML = `<b>${L(server.name)}</b> · ${L(server.location)}`;
+    $("#modalServer").innerHTML = `
+  <div><b>${L(server.name)}</b> · ${L(server.location)}</div>
+  <div class="modal-server-price">
+    ${priceHtml(server)}
+  </div>
+`;
     $("#fType").value = type;
     $("#fServerId").value = server.id;
     $("#fServerName").value = L(server.name);
