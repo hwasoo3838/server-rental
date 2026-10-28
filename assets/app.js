@@ -128,7 +128,21 @@
       ? "₩" + amount.toLocaleString("ko-KR")
       : "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
     const note = [approx ? t("price.approx") : "", t("price.vat"), L(s.priceNote)].filter(Boolean).join(" · ");
-    return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class="price-note">${note}</div>`;
+    const isXeon = s.id === "ellion-xeon-gold-6154-dual";
+
+if (isXeon) {
+  const original = currency === "KRW" ? "₩350,000" : "$250";
+  const discount = currency === "KRW" ? "₩290,000" : "$207";
+
+  return `
+    <div class="launch-offer">출시 특가 · Launch Offer</div>
+    <div class="original-price">${original}<small>${t("price.mo")}</small></div>
+    <div class="sale-price">${discount}<small>${t("price.mo")}</small></div>
+    <div class="price-note">${note}</div>
+  `;
+}
+
+return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class="price-note">${note}</div>`;
   }
 
   /* ---------- 서버 카드 ---------- */
