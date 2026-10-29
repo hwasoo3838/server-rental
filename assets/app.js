@@ -350,8 +350,10 @@ Email: p.email,
     $("#doneTitle").textContent = t(r ? "done.reserve.title" : "done.request.title");
     $("#doneMsg").innerHTML = r
       ? t("done.reserve.msg", { server: p.serverName, email: p.email }) + (mail.ok ? "" : t("done.reserve.logonly"))
-      : t("done.request.msg", { contact: contactEmail(), within: replyWithin(), email: p.email });
-    form.style.display = "none";
+: t("done.request.msg", { contact: contactEmail(), within: replyWithin(), email: p.email })
+  + (lang === "ko"
+    ? "<p style='margin-top:16px'><strong>결제 안내</strong><br>신청 승인 후 계좌이체 정보를 이메일로 안내해 드립니다. 이용료는 매월 선납이며, 입금 확인 후 서버가 제공됩니다.</p>"
+    : "<p style='margin-top:16px'><strong>Payment Information</strong><br>Once your request is approved, we will email you a PayPal payment link. Monthly subscription options will be confirmed before payment.</p>");    form.style.display = "none";
     done.style.display = "block";
     form.reset();
     toast(t(r ? "toast.reserve" : "toast.request"));
