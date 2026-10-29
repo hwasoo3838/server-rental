@@ -54,7 +54,7 @@ window.SERVERS = [
 priceUsd: 207,
 priceNote: {
   ko: "출시 특가 · 첫 3개월 월 290,000원, 이후 월 350,000원 · VAT 별도",
-  en: "Launch offer: $207/mo for the first 3 months, then $250/mo · VAT excluded"
+  en: "Launch offer: $199/mo for the first 3 months, then $250/mo · VAT excluded"
 },
     os: ["Ubuntu 24.04 LTS"],
     ctaType: "request",
