@@ -217,10 +217,12 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
     $("#fType").value = type;
     $("#fServerId").value = server.id;
     $("#fServerName").value = L(server.name);
-    const osSel = $("#fOs");
-    osSel.innerHTML = server.os.map((o) => `<option>${o}</option>`).join("");
-    const cardOs = $(`#os-${server.id}`);
-    if (cardOs) osSel.value = cardOs.value;
+
+    // 고객이 원하는 Linux OS와 정확한 버전을 직접 입력
+    $("#fOs").value = "";
+    $("#fOsVersion").value = "";
+    $("#fUsername").value = "";
+
     // 희망 GPU 수는 멀티 GPU 노드(MI325X ×8 등) 예약일 때만 받음
     current.showGpu = isReserve && gpuCount(server) > 1;
     $("#gpuField").style.display = current.showGpu ? "grid" : "none";
@@ -289,8 +291,12 @@ Server: `${p.serverName} (${p.serverId})`,
 "VAT": p.vat,
 Email: p.email,
     Name: p.name || "-",
-    OS: p.os,
+   
+    "Linux OS": p.os,
+    "OS Version": p.osVersion,
+    "Preferred Login ID": p.username || "ELLION assigned",
     Purpose: p.purpose,
+
     Term: p.duration,
     GPUs: p.gpuCount || "-",
     Message: p.message || "-",
@@ -332,8 +338,39 @@ Email: p.email,
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     errBox.style.display = "none";
+    
     if (!form.reportValidity()) return;
+
+    const requestedOs = $("#fOs").value.trim();
+    const requestedVersion = $("#fOsVersion").value.trim();
+
+    // 무료 Linux 배포판만 허용
+    const supportedLinux = [
+      "ubuntu", "debian", "rocky", "alma",
+      "fedora", "centos", "opensuse", "arch",
+      "oracle linux"
+    ];
+
+    const normalizedOs = requestedOs.toLowerCase();
+
+    if (!supportedLinux.some((name) => normalizedOs.includes(name))) {
+      errBox.textContent = lang === "ko"
+        ? "무료 Linux 운영체제만 지원합니다. Windows 및 유료 OS는 신청할 수 없습니다. 배포판 이름을 정확히 입력해 주세요."
+        : "Only free Linux distributions are supported. Windows and paid operating systems are not available.";
+      errBox.style.display = "block";
+      return;
+    }
+
+    if (!requestedVersion) {
+      errBox.textContent = lang === "ko"
+        ? "정확한 Linux 운영체제 버전을 입력해 주세요."
+        : "Please enter the exact Linux OS version.";
+      errBox.style.display = "block";
+      return;
+    }
+
     const btn = $("#submitBtn");
+
     const label = btn.textContent;
     btn.disabled = true; btn.textContent = t("form.sending");
     const p = buildPayload();
