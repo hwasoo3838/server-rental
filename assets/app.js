@@ -169,10 +169,15 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
         </div>
         <p class="tagline">${L(s.tagline)}</p>
         <dl class="specs">${s.specs.map((x) => `<dt>${x.k}</dt><dd>${x[lang] || x.ko}</dd>`).join("")}</dl>
-        <div class="os-row">
-          <label for="os-${s.id}">${t("card.os")}</label>
-          <select class="select-inline" id="os-${s.id}">${s.os.map((o) => `<option>${o}</option>`).join("")}</select>
-        </div>
+
+<div class="os-row">
+  <span class="hint">
+    ${lang === "ko"
+      ? "무료 Linux OS만 지원 · 배포판 및 버전 직접 지정"
+      : "Free Linux OS only · Specify distribution and exact version"}
+  </span>
+</div>
+
         <div class="plan-foot">
           <div>${priceHtml(s)}</div>
           <button class="${ctaClass(s)}" data-open="${ctaType(s)}" data-server="${s.id}">${ctaLabel(s)}</button>
