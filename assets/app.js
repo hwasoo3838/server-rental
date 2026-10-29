@@ -251,7 +251,7 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
 lang,
 currency,
 monthlyPrice: current.server.id === "ellion-xeon-gold-6154-dual"
-  ? (currency === "KRW" ? "290,000 KRW" : "207 USD")
+  ? (currency === "KRW" ? "290,000 KRW" : "199 USD")
   : (currency === "KRW"
       ? (current.server.priceKrw != null
           ? current.server.priceKrw.toLocaleString("ko-KR") + " KRW"
