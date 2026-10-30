@@ -16,7 +16,7 @@
   const q = new URLSearchParams(location.search);
 
   /* ---------- 상태 ---------- */
-  let lang = (q.get("lang") || localStorage.getItem(LS.lang) || (navigator.language || "ko").toLowerCase().slice(0, 2)) === "en" ? "en" : "ko";
+  LS.lang = (q.get("lang") || localStorage.getItem(LS.lang) || (navigator.language || "ko").toLowerCase().slice(0, 2)) === "en" ? "en" : "ko";
   let currency = q.get("cur") || localStorage.getItem(LS.cur) || (lang === "en" ? "USD" : "KRW");
   currency = currency.toUpperCase() === "USD" ? "USD" : "KRW";
   let filter = "all";
@@ -52,7 +52,7 @@
     $$("[data-mail-text]").forEach((el) => (el.textContent = contactEmail()));
     $$("[data-reply-within]").forEach((el) => (el.textContent = replyWithin()));
     $$("#langSeg button").forEach((b) => b.classList.toggle("on", b.dataset.lang === lang));
-    $("#currencySel").value = currency;
+    // English-only site: currency selector removed
     $("#useTags").innerHTML = t("use.tags").map((x) => `<span>${x}</span>`).join("");
     $("#faqList").innerHTML = t("faq.items").map(([qq, a]) => `<details><summary>${qq}</summary><div class="ans">${a}</div></details>`).join("");
     $$("#faqList [data-reply-within]").forEach((el) => (el.textContent = replyWithin()));
@@ -68,8 +68,7 @@
   }
   function setLang(l) { lang = l; localStorage.setItem(LS.lang, l); applyI18n(); render(); }
   function setCurrency(c) { currency = c; localStorage.setItem(LS.cur, c); render(); }
-  $("#langSeg").addEventListener("click", (e) => { const b = e.target.closest("[data-lang]"); if (b) setLang(b.dataset.lang); });
-  $("#currencySel").addEventListener("change", (e) => setCurrency(e.target.value));
+
   $("#year").textContent = new Date().getFullYear();
 
   /* ---------- 시트에서 가격/상태 로드 ---------- */
