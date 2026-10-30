@@ -11,7 +11,7 @@ window.ELGRIM_CONFIG = {
 
   // (1) 이메일 발송: FormSubmit (무료, 백엔드 불필요). {email} 자리에 시트의 notify_email → contact_email 순으로 들어감.
   //     수신 주소가 바뀌면 그 주소로 첫 제출 때 "Activate form" 메일이 1회 오고, 승인해야 이후 메일이 전달됩니다.
-  mailEndpoint: "https://formsubmit.co/ajax/{email}",
+  mailEndpoint: "",
 
   // (2) Google Apps Script 웹앱 URL. 가격 읽기(GET ?action=servers) + 로그 적재(POST) 모두 이 주소.
   logEndpoint: "https://script.google.com/macros/s/AKfycbwVd1C7xAuDyleSRXUtSRBUyxbDHAeyKx-M0ygCc_kIOVXLC50HP4hzUPdexzZj9riW1A/exec",
