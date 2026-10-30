@@ -16,9 +16,10 @@
   const q = new URLSearchParams(location.search);
 
   /* ---------- 상태 ---------- */
-  LS.lang = (q.get("lang") || localStorage.getItem(LS.lang) || (navigator.language || "ko").toLowerCase().slice(0, 2)) === "en" ? "en" : "ko";
-  let currency = q.get("cur") || localStorage.getItem(LS.cur) || (lang === "en" ? "USD" : "KRW");
-  currency = currency.toUpperCase() === "USD" ? "USD" : "KRW";
+
+let lang = "en";
+let currency = "USD";
+
   let filter = "all";
   let sort = "default";
   let live = null; // { servers, config, updatedAt }
