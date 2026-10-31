@@ -67,8 +67,20 @@ let currency = "USD";
     sel.innerHTML = arr.map((o) => `<option>${o}</option>`).join("");
     if (arr.includes(v)) sel.value = v;
   }
-  function setLang(l) { lang = l; localStorage.setItem(LS.lang, l); applyI18n(); render(); }
-  function setCurrency(c) { currency = c; localStorage.setItem(LS.cur, c); render(); }
+
+function setLang(l) {
+  lang = "en";
+  localStorage.setItem(LS.lang, "en");
+  applyI18n();
+  render();
+}
+
+function setCurrency(c) {
+  currency = "USD";
+  localStorage.setItem(LS.cur, "USD");
+  render();
+}
+
 
   $("#year").textContent = new Date().getFullYear();
 
