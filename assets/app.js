@@ -325,6 +325,7 @@ Email: p.email,
 
     Term: p.duration,
     GPUs: p.gpuCount || "-",
+     "Monthly Budget (USD)": p.budget || "-",
     Message: p.message || "-",
     "Lang/Currency": `${p.lang} / ${p.currency}`,
     Time: p.timestamp,
