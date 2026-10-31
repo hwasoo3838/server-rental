@@ -165,7 +165,6 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
         </div>
         <div>
           <h3>${L(s.name)}</h3>
-          <div class="loc">${L(s.location)}${L(s.eta) ? " · " + L(s.eta) : ""}</div>
         </div>
         <p class="tagline">${L(s.tagline)}</p>
         <dl class="specs">${s.specs.map((x) => `<dt>${x.k}</dt><dd>${x[lang] || x.ko}</dd>`).join("")}</dl>
