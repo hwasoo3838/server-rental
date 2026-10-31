@@ -94,7 +94,9 @@ function setCurrency(c) {
       if (r.status) m.status = r.status;
       if (r.priceKrw != null) m.priceKrw = r.priceKrw;
       if (r.priceUsd != null) m.priceUsd = r.priceUsd;
-      ["name", "priceNote", "eta"].forEach((k) => {
+      
+["priceNote", "eta"].forEach((k) => {
+
         const v = r[k];
         if (v && (v.ko || v.en)) m[k] = { ko: v.ko || (s[k] && s[k].ko) || "", en: v.en || (s[k] && s[k].en) || "" };
       });
