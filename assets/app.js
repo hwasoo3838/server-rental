@@ -142,17 +142,14 @@ function setCurrency(c) {
     const note = [approx ? t("price.approx") : "", t("price.vat"), L(s.priceNote)].filter(Boolean).join(" · ");
     const isXeon = s.id === "ellion-xeon-gold-6154-dual";
 
-if (isXeon) {
-  const original = currency === "KRW" ? "₩350,000" : "$250";
-  const discount = currency === "KRW" ? "₩290,000" : "$199";
 
+if (isXeon) {
   return `
-    <div class="launch-offer">LIMITED-TIME LAUNCH OFFER</div>
-    <div class="original-price">${original}<small>${t("price.mo")}</small></div>
-    <div class="sale-price">${discount}<small>${t("price.mo")}</small></div>
-    <div class="price-note">${note}</div>
+    <div class="price">$185<small>/mo</small></div>
+    <div class="price-note">Fixed monthly rate</div>
   `;
 }
+
 
 return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class="price-note">${note}</div>`;
   }
