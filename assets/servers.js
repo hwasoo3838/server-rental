@@ -52,11 +52,13 @@ window.SERVERS = [
       { k: "Access", ko: "Ubuntu 24.04.3 LTS · SSH", en: "Ubuntu 24.04.3 LTS · SSH" },
     ],
    priceKrw: 290000,
-priceUsd: 207,
+
+priceUsd: 185,
 priceNote: {
-  ko: "출시 특가 · 첫 3개월 월 290,000원, 이후 월 350,000원 · VAT 별도",
-  en: "Launch offer: $199/mo for the first 3 months, then $250/mo · VAT excluded"
+  ko: "월 고정 임대료 · 할인 기간 없음",
+  en: "Fixed monthly rate"
 },
+
     os: ["Ubuntu 24.04 LTS"],
     ctaType: "request",
   },
