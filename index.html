@@ -230,19 +230,33 @@
          autocomplete="name" />
 </div>
 
-<div class="field">
-  <label for="fOs">Linux OS / 리눅스 배포판 (필수)</label>
-  <input type="text" id="fOs" name="os" required
-         maxlength="80"
-         placeholder="예: Ubuntu Server, Rocky Linux, Debian" />
-</div>
 
 <div class="field">
-  <label for="fOsVersion">OS Version / 정확한 버전 (필수)</label>
-  <input type="text" id="fOsVersion" name="osVersion" required
-         maxlength="80"
-         placeholder="예: 24.04.3 LTS, 9.6, 12.11" />
+  <label for="fOs">Linux Distribution (Required)</label>
+  <input
+    type="text"
+    id="fOs"
+    name="os"
+    required
+    maxlength="80"
+    placeholder="e.g. Ubuntu Server, Rocky Linux, Debian"
+  />
 </div>
+
+
+
+<div class="field">
+  <label for="fOsVersion">OS Version (Required)</label>
+  <input
+    type="text"
+    id="fOsVersion"
+    name="osVersion"
+    required
+    maxlength="80"
+    placeholder="e.g. 24.04.3 LTS, 9.6, 12.11"
+  />
+</div>
+
 
 <p class="hint" id="linuxPolicy">
   무료 Linux 운영체제만 설치 가능합니다.
