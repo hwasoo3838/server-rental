@@ -35,7 +35,8 @@ window.SERVERS = [
     id: "ellion-xeon-gold-6154-dual",
     accent: "ai",
     catLabel: "CPU · Bare Metal",
-    name: { ko: "CPU 서버 · Xeon Gold 6154 ×2", en: "CPU Server · Dual Xeon Gold 6154" },
+    name: {   ko: "듀얼 Intel Xeon Gold 6154 · 36코어 / 72스레드",
+  en: "Dual Intel Xeon Gold 6154 · 36 Cores / 72 Threads"},
     location: { ko: "KR · 다우IDC", en: "KR · Korea IDC" },
     status: "available",
     tagline: {
