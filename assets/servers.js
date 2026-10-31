@@ -72,7 +72,7 @@ priceNote: {
     status: "available",
     tagline: {
       ko: "EPYC 48코어에 메모리 251GB인 물리 서버를 한 대 통째로 씁니다. LLM 추론이나 렌더링, 게임 서버용으로 쓰기 좋습니다.",
-      en: "A whole physical server with a 48-core EPYC and 251 GB of RAM. Good for LLM inference, rendering or game servers.",
+      en: "Dedicated NVIDIA RTX A4000 16GB GPU server powered by a 48-core AMD EPYC 7642 processor and 251GB ECC RAM. Suitable for AI inference, GPU rendering, computer vision, development environments, and workloads requiring dedicated hardware. Includes root/SSH access and dedicated IPv4 connectivity.",
     },
     specs: [
       { k: "CPU", ko: "AMD EPYC 7642 · 48코어 (2.3 / 3.3 GHz)", en: "AMD EPYC 7642 · 48 cores (2.3 / 3.3 GHz)" },
@@ -157,7 +157,8 @@ priceNote: {
     eta: { ko: "입고 예정", en: "Arriving soon" },
     tagline: {
       ko: "GIGABYTE G893-ZX1-AAX2에 MI325X 8장을 올린 노드로, 큰 LLM 학습과 추론용입니다. 입고되면 예약 순서대로 연락드립니다.",
-      en: "A GIGABYTE G893-ZX1-AAX2 node with eight MI325X GPUs, for training and serving large LLMs. Once it arrives we contact reservations in order.",
+      en: "Reserve an AMD Instinct MI325X 8-GPU bare metal server featuring 2TB total HBM3E GPU memory, dual AMD EPYC 9555 processors, and 2.3TB DDR5 RAM. Designed for large language model training, AI inference, deep learning, and enterprise AI workloads. Planned configuration based on the GIGABYTE G893-ZX1-AAX2 platform. Hardware availability and deployment dates are subject to confirmation.",
+
     },
     specs: [
       { k: "Platform", ko: "GIGABYTE G893-ZX1-AAX2", en: "GIGABYTE G893-ZX1-AAX2" },
