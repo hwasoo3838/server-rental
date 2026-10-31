@@ -278,6 +278,7 @@ $("#modalServer").innerHTML = `
 lang,
 currency,
 
+
 monthlyPrice: current.server.id === "ellion-xeon-gold-6154-dual"
   ? "185 USD"
   : (current.server.priceUsd != null
@@ -288,9 +289,8 @@ regularPrice: "",
 
 priceCondition: "Standard monthly rate",
 
-  ? "Launch offer: first 3 months, then regular price"
-  : "Standard monthly rate",
 vat: "Excluded",
+
       timestamp: new Date().toISOString(),
       page: location.href,
       referrer: document.referrer || "",
