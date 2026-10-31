@@ -67,8 +67,8 @@ window.I18N = {
     "close": "닫기",
   },
   en: {
-    "meta.title": "Bare-metal GPU server rental | Ellion",
-    "meta.desc": "Ellion rents bare-metal GPU servers in Korea: RTX A4000, RTX 4090, L40S / RTX 6000 Ada and an 8× MI325X node. Requests by email.",
+      "meta.title": "AMD MI325X GPU Servers & Bare Metal Reservations | ELLION",
+      "meta.desc": "Explore AMD Instinct MI325X, MI300X and NVIDIA GPU servers. Submit a reservation request for AI training, inference and bare metal infrastructure. ELLION.",
     "status.bar": "We're in soft launch, so there's no online checkout yet. Send requests by email:",
     "nav.home": "Home", "nav.servers": "Servers", "nav.how": "How it works", "nav.included": "Included", "nav.faq": "FAQ",
     "cta.request.short": "Request access",
