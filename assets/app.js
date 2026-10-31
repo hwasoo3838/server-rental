@@ -410,6 +410,14 @@ Email: p.email,
       errBox.style.display = "block";
       return;
     }
+     
+    // Google Ads: 서버 임대 신청 완료 전환
+    if (typeof gtag === "function") {
+      gtag("event", "conversion", {
+        send_to: "AW-18530044178/n7sfCLfKxq8dEJKS6INF"
+      });
+    }
+
     const r = isR(p);
     $("#doneTitle").textContent = t(r ? "done.reserve.title" : "done.request.title");
     $("#doneMsg").innerHTML = r
