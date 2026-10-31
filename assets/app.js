@@ -135,7 +135,7 @@ if (isXeon) {
   const discount = currency === "KRW" ? "₩290,000" : "$199";
 
   return `
-    <div class="launch-offer">출시 특가 · Launch Offer</div>
+    <div class="launch-offer">LIMITED-TIME LAUNCH OFFER</div>
     <div class="original-price">${original}<small>${t("price.mo")}</small></div>
     <div class="sale-price">${discount}<small>${t("price.mo")}</small></div>
     <div class="price-note">${note}</div>
