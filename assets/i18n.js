@@ -1,8 +1,8 @@
 /* Ellion Bare Metal - UI 문구 (ko / en) */
 window.I18N = {
   ko: {
-    "meta.title": "베어메탈 GPU 서버 임대 | Ellion",
-    "meta.desc": "엘리온 베어메탈 GPU 서버 임대. RTX A4000, RTX 4090, L40S / RTX 6000 Ada, MI325X 8장 서버를 메일로 신청받습니다.",
+   "meta.title": "AMD MI325X GPU 서버 사전예약 및 베어메탈 서버 | ELLION",
+   "meta.desc": "AMD Instinct MI325X, MI300X 및 NVIDIA GPU 서버 사전예약과 이용 문의를 접수합니다. AI 학습, 추론 및 고성능 베어메탈 인프라 수요를 확인하세요.",
     "status.bar": "소프트 런칭 기간이라 온라인 결제 없이 메일로 신청을 받고 있습니다. 문의:",
     "nav.home": "홈", "nav.servers": "서버", "nav.how": "이용 방법", "nav.included": "기본 제공", "nav.faq": "FAQ",
     "cta.request.short": "사용 신청",
