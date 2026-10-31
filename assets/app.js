@@ -277,8 +277,9 @@ $("#modalServer").innerHTML = `
     return {
       ...p,
      gpuCount: current.showGpu ? p.gpuCount : "",
-lang,
-currency,
+       budget: (p.budget || "").trim(),
+     lang,
+     currency,
 
 
 monthlyPrice: current.server.id === "ellion-xeon-gold-6154-dual"
