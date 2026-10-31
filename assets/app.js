@@ -177,10 +177,20 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
   </span>
 </div>
 
-        <div class="plan-foot">
-          <div>${priceHtml(s)}</div>
-          <button class="${ctaClass(s)}" data-open="${ctaType(s)}" data-server="${s.id}">${ctaLabel(s)}</button>
-        </div>
+
+<div class="plan-foot plan-foot-premium">
+  <div class="plan-price-area">
+    <span class="plan-price-label">MONTHLY RENTAL</span>
+    ${priceHtml(s)}
+  </div>
+  <button
+    class="${ctaClass(s)} plan-request-btn"
+    data-open="${ctaType(s)}"
+    data-server="${s.id}">
+    ${ctaLabel(s)}
+  </button>
+</div>
+
       </article>`).join("");
     renderPriceSource();
   }
