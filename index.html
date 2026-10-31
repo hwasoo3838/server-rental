@@ -290,22 +290,22 @@
 
         <div class="row2">
           <div class="field">
-            <label for="fPurpose" data-i18n="form.purpose">용도</label>
+            <label for="fPurpose" data-i18n="form.purpose">Purpose</label>
             <select id="fPurpose" name="purpose"></select>
           </div>
           <div class="field">
-            <label for="fDuration" data-i18n="form.duration">사용 기간</label>
+            <label for="fDuration" data-i18n="form.duration">Rental Term</label>
             <select id="fDuration" name="duration"></select>
           </div>
         </div>
         <div class="field" id="gpuField" style="display:none">
-          <label for="fGpu"><span data-i18n="form.gpu">희망 GPU 수</span> <span class="opt">(MI325X)</span></label>
+          <label for="fGpu"><span data-i18n="form.gpu">GPU Quantity</span> <span class="opt">(MI325X)</span></label>
           <select id="fGpu" name="gpuCount">
-            <option value="1">1 GPU</option><option value="2">2 GPU</option><option value="4">4 GPU</option><option value="8" selected data-i18n="form.gpuAll">8 GPU (노드 전체)</option>
+            <option value="1">1 GPU</option><option value="2">2 GPU</option><option value="4">4 GPU</option><option value="8" selected data-i18n="form.gpuAll">8 GPU (Full Node)</option>
           </select>
         </div>
         <div class="field">
-          <label for="fMsg"><span data-i18n="form.msg">메시지</span> <span class="opt" data-i18n="form.optional">(선택)</span></label>
+          <label for="fMsg"><span data-i18n="form.msg">Additional Requirements</span> <span class="opt" data-i18n="form.optional">(Optional)</span></label>
           <textarea id="fMsg" name="message" data-i18n-attr="placeholder:form.msgPh"></textarea>
         </div>
         <label class="consent">
