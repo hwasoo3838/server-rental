@@ -277,7 +277,7 @@ $("#modalServer").innerHTML = `
     return {
       ...p,
      gpuCount: current.showGpu ? p.gpuCount : "",
-       budget: (p.budget || "").trim(),
+
      lang,
      currency,
 
