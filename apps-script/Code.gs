@@ -24,7 +24,7 @@ const SH_LOGS = "logs";
 
 const SERVER_COLS = ["id", "status", "price_krw", "price_usd", "name_ko", "name_en", "price_note_ko", "price_note_en", "eta_ko", "eta_en", "memo"];
 const LOG_COLS = [
-  "timestamp", "type", "serverId", "serverName", "email", "name", "os", "purpose", "duration", "gpuCount",
+  "timestamp", "type", "serverId", "serverName", "email", "name", "os", "purpose", "duration", "gpuCount", "budget",
   "message", "lang", "currency", "page", "referrer", "userAgent", "language", "screen", "timezone",
   "utm_source", "utm_medium", "utm_campaign", "replayed", "status",
 ];
