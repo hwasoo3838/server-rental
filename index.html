@@ -262,38 +262,25 @@
 
 
 <div class="field">
-  <label for="fOs">Linux Distribution (Required)</label>
-  <input
-    type="text"
-    id="fOs"
-    name="os"
-    required
-    maxlength="80"
-    placeholder="e.g. Ubuntu Server, Rocky Linux, Debian"
-  />
+  <label for="fOs" data-i18n="os.choice">OS request</label>
+  <select id="fOs" name="osChoice" required>
+    <option value="keep" data-i18n="os.keep" selected>Keep current OS</option>
+    <option value="ubuntu">Ubuntu Server</option>
+    <option value="debian">Debian</option>
+    <option value="rocky">Rocky Linux</option>
+    <option value="alma">AlmaLinux</option>
+    <option value="other" data-i18n="os.other">Other Linux</option>
+  </select>
 </div>
-
-
-
-<div class="field">
-  <label for="fOsVersion">OS Version (Required)</label>
-  <input
-    type="text"
-    id="fOsVersion"
-    name="osVersion"
-    required
-    maxlength="80"
-    placeholder="e.g. 24.04.3 LTS, 9.6, 12.11"
-  />
+<div class="field" id="otherLinuxField" hidden style="display:none">
+  <label for="fOsDistribution" data-i18n="os.distribution">Linux distribution name</label>
+  <input type="text" id="fOsDistribution" name="osDistribution" maxlength="80" disabled />
 </div>
-
-
-
-<p class="hint" id="linuxPolicy">
-  Only free Linux distributions are supported.
-  Windows and commercial operating systems are not available.
-  OS availability will be confirmed after your request.
-</p>
+<div class="field" id="osVersionField" hidden style="display:none">
+  <label for="fOsVersion" data-i18n="os.version">Requested OS version</label>
+  <input type="text" id="fOsVersion" name="osVersion" maxlength="80" placeholder="e.g. 24.04 LTS, 12, 9.6" disabled />
+</div>
+<p class="hint" id="linuxPolicy" data-i18n="os.policy">Linux only. Windows and Windows Server are not offered. OS changes are requests only; no automatic reinstall is performed.</p>
 
 <div class="field">
   <label for="fUsername">
@@ -363,9 +350,9 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="assets/servers.js?v=20260928d"></script>
+  <script src="assets/servers.js?v=20261104-current-os"></script>
   <script src="assets/analytics.js?v=20260930a"></script>
-  <script src="assets/i18n.js?v=20260928d"></script>
-  <script src="assets/app.js?v=20260928d"></script>
+  <script src="assets/i18n.js?v=20261104-current-os"></script>
+  <script src="assets/app.js?v=20261104-current-os"></script>
 </body>
 </html>

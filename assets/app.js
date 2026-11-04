@@ -8,7 +8,38 @@
 (function () {
   "use strict";
   const CFG = window.ELGRIM_CONFIG || {};
-  const BASE = window.SERVERS || [];
+  const CURRENT_OS = {
+  "ellion-xeon-gold-6154-dual": {
+    "name": "Ubuntu",
+    "displayName": "Ubuntu",
+    "version": "24.04.3 LTS",
+    "kernel": null,
+    "source": "Existing product Access specification",
+    "verification": "LEGACY_SPEC_UNVERIFIED",
+    "ipMappingStatus": "UNVERIFIED"
+  },
+  "elgrim-gfx-a4000": {
+    "name": "Ubuntu Server",
+    "displayName": "Ubuntu",
+    "version": "20.04.6 LTS",
+    "kernel": null,
+    "source": "Owner-provided confirmed OS information",
+    "verification": "OWNER_CONFIRMED",
+    "ipMappingStatus": "OWNER_CONFIRMED"
+  },
+  "ellion-web-db-6140": {
+    "name": "Ubuntu",
+    "displayName": "Ubuntu",
+    "version": "22.04.5 LTS",
+    "kernel": "5.15.0-119-generic",
+    "source": "Owner-provided confirmed OS information",
+    "verification": "OWNER_CONFIRMED",
+    "ipMappingStatus": "UNVERIFIED"
+  }
+};
+  // Keep the existing public configuration blob unchanged; apply OS facts and Linux-only options here.
+  window.SERVERS = (window.SERVERS || []).map(server => ({ ...server, os: (server.os || []).filter(os => !/windows/i.test(os)), currentOs: CURRENT_OS[server.id] }));
+  const BASE = window.SERVERS;
   const I18N = window.I18N || {};
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -17,12 +48,17 @@
 
   /* ---------- 상태 ---------- */
 
-let lang = "en";
+let lang = q.get("lang") === "ko" ? "ko" : "en";
 let currency = "USD";
 
   let filter = "all";
   let sort = "default";
   let live = null; // { servers, config, updatedAt }
+  let catalogueState = "loading";
+  let fetchedAt = 0;
+  let priceExpiryTimer;
+  const positivePrice = (value) => typeof value === "number" && Number.isFinite(value) && value > 0 ? value : null;
+  const fresh = () => ["live", "cache"].includes(catalogueState) && Date.now() - fetchedAt >= 0 && Date.now() - fetchedAt < (CFG.cacheSeconds || 120) * 1000;
   let SERVERS = BASE.map((s) => ({ ...s }));
 
   const t = (k, vars) => {
@@ -69,8 +105,8 @@ let currency = "USD";
   }
 
 function setLang(l) {
-  lang = "en";
-  localStorage.setItem(LS.lang, "en");
+  lang = l === "ko" ? "ko" : "en";
+  localStorage.setItem(LS.lang, lang);
   applyI18n();
   render();
 }
@@ -85,75 +121,67 @@ function setCurrency(c) {
   $("#year").textContent = new Date().getFullYear();
 
   /* ---------- 시트에서 가격/상태 로드 ---------- */
-  function mergeLive(data) {
+  function mergeLive(data, at = Date.now(), cached = false) {
+    if (!data || data.ok !== true || !Array.isArray(data.servers) || data.servers.some(r => !r || typeof r.id !== "string") || new Set(data.servers.map(r => r.id)).size !== data.servers.length) throw new Error("Invalid catalogue response");
     live = data;
-    SERVERS = BASE.map((s) => {
-      const r = (data.servers || []).find((x) => x.id === s.id);
-      if (!r) return { ...s };
-      const m = { ...s };
-      if (r.status) m.status = r.status;
-      if (r.priceKrw != null) m.priceKrw = r.priceKrw;
-      if (r.priceUsd != null) m.priceUsd = r.priceUsd;
-      
-["priceNote", "eta"].forEach((k) => {
-
-        const v = r[k];
-        if (v && (v.ko || v.en)) m[k] = { ko: v.ko || (s[k] && s[k].ko) || "", en: v.en || (s[k] && s[k].en) || "" };
+    fetchedAt = at;
+    catalogueState = cached ? "cache" : "live";
+    clearTimeout(priceExpiryTimer);
+    priceExpiryTimer = setTimeout(() => { render(); }, Math.max(0, (CFG.cacheSeconds || 120) * 1000 - (Date.now() - at)) + 10);
+    SERVERS = BASE.map(s => {
+      const row = data.servers.find(r => r.id === s.id);
+      if (!row) return { ...s, sheetListed: false };
+      const merged = { ...s, sheetListed: true, status: ["available", "reserve", "soldout"].includes(row.status) ? row.status : "unknown",
+        priceUsd: positivePrice(row.priceUsd), priceKrw: positivePrice(row.priceKrw) };
+      ["priceNote", "eta"].forEach(key => {
+        const value = row[key];
+        if (value && (value.ko || value.en)) merged[key] = { ko: value.ko || s[key]?.ko || "", en: value.en || s[key]?.en || "" };
       });
-      return m;
+      return merged;
     });
   }
   async function loadLive(force) {
-    if (!CFG.logEndpoint) return;
+    if (!CFG.logEndpoint) { catalogueState = "offline"; return; }
     try {
-      const c = JSON.parse(sessionStorage.getItem(LS.cache) || "null");
-      if (!force && c && Date.now() - c.at < (CFG.cacheSeconds || 120) * 1000) { mergeLive(c.data); return; }
+      const cache = JSON.parse(sessionStorage.getItem(LS.cache) || "null");
+      if (!force && cache && Date.now() >= cache.at && Date.now() - cache.at < (CFG.cacheSeconds || 120) * 1000) { mergeLive(cache.data, cache.at, true); return; }
     } catch (_) {}
     try {
-      const r = await fetch(CFG.logEndpoint + "?action=servers&_=" + Date.now(), { cache: "no-store" });
-      const data = await r.json();
-      if (data && data.ok) {
-        mergeLive(data);
-        sessionStorage.setItem(LS.cache, JSON.stringify({ at: Date.now(), data }));
-      }
-    } catch (e) { console.warn("live prices unavailable", e); }
+      const response = await fetch(CFG.logEndpoint + "?action=servers&_=" + Date.now(), { cache: "no-store", signal: AbortSignal.timeout(8000) });
+      if (!response.ok) throw new Error("Catalogue unavailable");
+      const data = await response.json();
+      mergeLive(data);
+      try { sessionStorage.setItem(LS.cache, JSON.stringify({ at: fetchedAt, data })); } catch (_) {}
+    } catch (_) {
+      live = null; fetchedAt = 0; catalogueState = "failed";
+      SERVERS = BASE.map(s => ({ ...s }));
+      try { sessionStorage.removeItem(LS.cache); } catch (_) {}
+    }
   }
   function renderPriceSource() {
     const el = $("#priceSource");
     if (!el) return;
-    if (live && live.updatedAt) {
-      const d = new Date(live.updatedAt);
-      el.textContent = t("price.live", { time: d.toLocaleTimeString(lang === "ko" ? "ko-KR" : "en-US", { hour: "2-digit", minute: "2-digit" }) });
-    } else el.textContent = CFG.logEndpoint ? "" : t("price.fallback");
+    el.textContent = live && fresh() ? t("price.live", { time: new Date(fetchedAt).toLocaleTimeString(lang === "ko" ? "ko-KR" : "en-US", { hour: "2-digit", minute: "2-digit" }) }) : t("price.fallback");
   }
-
-  /* ---------- 가격 표시 ---------- */
+  // Restore the established $185 Dual Xeon offer in cards, modal and payload.
+  // RTX A4000's established $200 quote remains available in offline preview.
+  // Base catalogue specifications and product records are never mutated.
+  function quote(s) {
+    if (s.id === "ellion-xeon-gold-6154-dual") return { amount: currency === "USD" ? 185 : 290000, approx: false };
+    const base = BASE.find(item => item.id === s.id) || s;
+    const usd = positivePrice(s.priceUsd) ?? positivePrice(base.priceUsd) ?? (s.id === "elgrim-gfx-a4000" ? 200 : null);
+    const krw = positivePrice(s.priceKrw) ?? positivePrice(base.priceKrw);
+    if (currency === "USD") return usd !== null ? { amount: usd, approx: false } : { amount: krw === null ? null : Math.round(krw / fx()), approx: krw !== null };
+    return krw !== null ? { amount: krw, approx: false } : { amount: usd === null ? null : Math.round(usd * fx() / 1000) * 1000, approx: usd !== null };
+  }
   function priceHtml(s) {
-    let amount = null, approx = false;
-    if (currency === "KRW") {
-      if (s.priceKrw) amount = s.priceKrw;
-      else if (s.priceUsd) { amount = Math.round((s.priceUsd * fx()) / 1000) * 1000; approx = true; }
-    } else {
-      if (s.priceUsd) amount = s.priceUsd;
-      else if (s.priceKrw) { amount = Math.round(s.priceKrw / fx()); approx = true; }
-    }
-    if (amount == null) return `<div class="price">${t("price.ask")}</div><div class="price-note">${L(s.priceNote)}</div>`;
-    const fmt = currency === "KRW"
-      ? "₩" + amount.toLocaleString("ko-KR")
-      : "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
-    const note = [approx ? t("price.approx") : "", t("price.vat"), L(s.priceNote)].filter(Boolean).join(" · ");
-    const isXeon = s.id === "ellion-xeon-gold-6154-dual";
-
-
-if (isXeon) {
-  return `
-    <div class="price">$185<small>/mo</small></div>
-    <div class="price-note">Fixed monthly rate</div>
-  `;
-}
-
-
-return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class="price-note">${note}</div>`;
+    const { amount, approx } = quote(s);
+    const fixed = s.id === "ellion-xeon-gold-6154-dual";
+    const priceNote = fixed ? (lang === "ko" ? "월 고정 임대료" : "Fixed monthly rate") : L(s.priceNote);
+    if (amount === null) return '<div class="price">' + t("price.ask") + '</div><div class="price-note">' + priceNote + '</div>';
+    const fmt = currency === "KRW" ? "₩" + amount.toLocaleString("ko-KR") : "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
+    const note = fixed ? priceNote : [approx ? t("price.approx") : "", t("price.vat"), priceNote].filter(Boolean).join(" · ");
+    return '<div class="price">' + fmt + '<small>' + t("price.mo") + '</small></div><div class="price-note">' + note + '</div>';
   }
 
   /* ---------- 서버 카드 ---------- */
@@ -172,7 +200,7 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
       <article class="card plan" data-accent="${s.accent}" data-id="${s.id}">
         <div class="plan-top">
           <span class="badge cat">${s.catLabel}</span>
-          <span class="status ${s.status}">${t("status." + s.status)}</span>
+          <span class="status ${s.status}">${t("status." + (s.status === "unknown" ? "soldout" : s.status))}</span>
         </div>
         <div>
           <h3>${L(s.name)}</h3>
@@ -181,10 +209,11 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
         <dl class="specs">${s.specs.map((x) => `<dt>${x.k}</dt><dd>${x[lang] || x.ko}</dd>`).join("")}</dl>
 
 <div class="os-row">
+  <div>${currentOsHtml(s)}</div>
   <span class="hint">
     ${lang === "ko"
-      ? "무료 Linux OS만 지원 · 배포판 및 버전 직접 지정"
-      : "Free Linux OS only · Specify distribution and exact version"}
+      ? "현재 OS 유지 또는 Linux OS 변경 요청"
+      : "Keep current OS or request a Linux OS change"}
   </span>
 </div>
 
@@ -204,6 +233,11 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
 
       </article>`).join("");
     renderPriceSource();
+    if (current && modal.classList.contains("open")) {
+      current.server = SERVERS.find(s => s.id === current.server.id) || current.server;
+      const priceArea = $("#modalServer .modal-server-price");
+      if (priceArea) priceArea.innerHTML = priceHtml(current.server);
+    }
   }
 
   $("#statusSeg").addEventListener("click", (e) => {
@@ -214,7 +248,7 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
     render();
   });
   $("#sortSel").addEventListener("change", (e) => { sort = e.target.value; render(); });
-  $("#refreshBtn").addEventListener("click", async () => { await loadLive(true); applyI18n(); render(); toast(t("refreshed")); });
+  $("#refreshBtn").addEventListener("click", async () => { await loadLive(true); applyI18n(); render(); toast(t(fresh() ? "refreshed" : "price.fallback")); });
 
   /* ---------- 모바일 메뉴 ---------- */
   $("#menuBtn").addEventListener("click", () => $("#nav").classList.toggle("open"));
@@ -226,6 +260,37 @@ return `<div class="price">${fmt}<small>${t("price.mo")}</small></div><div class
   const done = $("#done");
   const errBox = $("#formErr");
   let current = null;
+  const osChoices = { ubuntu: "Ubuntu Server", debian: "Debian", rocky: "Rocky Linux", alma: "AlmaLinux" };
+  function currentOs(server) {
+    // Explicit product OS facts only. Never infer installed OS from offered options.
+    return server.currentOs || { name: null, displayName: null, version: null, kernel: null, source: null, verification: "UNVERIFIED", ipMappingStatus: "UNVERIFIED" };
+  }
+  function currentOsHtml(server) {
+    const os = currentOs(server);
+    const value = os.name && os.version ? (os.displayName || os.name) + " " + os.version : t("os.unknown");
+    const evidence = os.verification === "OWNER_CONFIRMED" ? t("os.ownerConfirmed") : os.name ? t("os.legacyUnverified") : t("os.unknown");
+    return '<div class="hint current-os">' + t("os.current") + ': ' + value + (os.kernel ? '<br/>Kernel: ' + os.kernel : '') + '</div><div class="hint os-evidence">' + evidence + '</div>';
+  }
+  function syncOsFields() {
+    const choice = $("#fOs").value, change = choice !== "keep", other = choice === "other";
+    for (const [field, input, show] of [["#osVersionField", "#fOsVersion", change], ["#otherLinuxField", "#fOsDistribution", other]]) {
+      $(field).hidden = !show; $(field).style.display = show ? "" : "none";
+      $(input).disabled = !show; $(input).required = show;
+      if (!show) $(input).value = "";
+    }
+  }
+  $("#fOs").addEventListener("change", syncOsFields);
+  function osRequest() {
+    const choice = $("#fOs").value;
+    const change = choice !== "keep";
+    const distribution = choice === "other" ? $("#fOsDistribution").value.trim() : "";
+    const version = change ? $("#fOsVersion").value.trim() : "";
+    const selected = choice === "keep" ? "Keep current OS" : choice === "other" ? distribution : osChoices[choice];
+    const prohibited = /windows|win32|win64|microsoft|macos|mac os|darwin/i;
+    if (!selected || (change && (!version || version.length > 80)) || (choice === "other" && (!distribution || distribution.length > 80)) || prohibited.test(selected + " " + version)) return null;
+    return { osChoice: choice, os: selected, osVersion: version, osDistribution: distribution, osChangeRequested: change, osRequestMode: "REQUEST_ONLY" };
+  }
+
 
   function openModal(type, serverId) {
     const server = SERVERS.find((s) => s.id === serverId) || SERVERS[0];
@@ -239,15 +304,17 @@ $("#modalServer").innerHTML = `
   <div class="modal-server-price">
     ${priceHtml(server)}
   </div>
+  ${currentOsHtml(server)}
 `;
 
     $("#fType").value = type;
     $("#fServerId").value = server.id;
     $("#fServerName").value = L(server.name);
 
-    // 고객이 원하는 Linux OS와 정확한 버전을 직접 입력
-    $("#fOs").value = "";
+    $("#fOs").value = "keep";
     $("#fOsVersion").value = "";
+    $("#fOsDistribution").value = "";
+    syncOsFields();
     $("#fUsername").value = "";
 
     // 희망 GPU 수는 멀티 GPU 노드(MI325X ×8 등) 예약일 때만 받음
@@ -273,23 +340,29 @@ $("#modalServer").innerHTML = `
 
   /* ---------- 전송 ---------- */
   function buildPayload() {
+    current.server = SERVERS.find(s => s.id === current.server.id) || current.server;
     const p = Object.fromEntries(new FormData(form).entries());
+    const request = osRequest();
+    const installed = currentOs(current.server);
+    const requestSummary = request.osChangeRequested ? "OS change requested: " + request.os + "; version: " + request.osVersion : "Keep current OS; no OS change requested";
     return {
       ...p,
+      ...request,
+      currentOs: installed.name,
+      currentOsVersion: installed.version,
+      currentOsSource: installed.source,
+      currentOsVerification: installed.verification,
+      currentOsKernel: installed.kernel,
+      currentOsIpMappingStatus: installed.ipMappingStatus,
+      message: [p.message || "", "[Current OS] " + (installed.name ? installed.name + " " + installed.version : "Unverified") + "; source: " + (installed.source || "none") + "; verification: " + installed.verification, "[OS request] " + requestSummary + ". Request only; no automatic reinstall."].filter(Boolean).join("\n"),
      gpuCount: current.showGpu ? p.gpuCount : "",
 
      lang,
      currency,
 
 
-monthlyPrice: current.server.id === "ellion-xeon-gold-6154-dual"
-  ? "185 USD"
-  : (current.server.priceUsd != null
-      ? current.server.priceUsd.toLocaleString("en-US") + " USD"
-      : "Contact us"),
-
+monthlyPrice: quote(current.server).amount === null ? "Price confirmation required" : quote(current.server).amount.toLocaleString("en-US", { maximumFractionDigits: 0 }) + " " + currency + (quote(current.server).approx ? " (indicative conversion)" : ""),
 regularPrice: "",
-
 priceCondition: "Standard monthly rate",
 
 vat: "Excluded",
@@ -319,6 +392,13 @@ Email: p.email,
     Name: p.name || "-",
    
     "Linux OS": p.os,
+    "OS Change Requested": p.osChangeRequested ? "Yes (request only)" : "No (keep current OS)",
+    "Current OS": p.currentOs || "Unverified",
+    "Current OS Version": p.currentOsVersion || "Unverified",
+    "Current OS Kernel": p.currentOsKernel || "Unverified",
+    "Current OS Source": p.currentOsSource || "Unverified",
+    "Current OS Verification": p.currentOsVerification,
+    "Product IP Mapping": p.currentOsIpMappingStatus,
     "OS Version": p.osVersion,
     "Preferred Login ID": p.username || "ELLION assigned",
     Purpose: p.purpose,
@@ -368,30 +448,8 @@ Email: p.email,
     
     if (!form.reportValidity()) return;
 
-    const requestedOs = $("#fOs").value.trim();
-    const requestedVersion = $("#fOsVersion").value.trim();
-
-    // 무료 Linux 배포판만 허용
-    const supportedLinux = [
-      "ubuntu", "debian", "rocky", "alma",
-      "fedora", "centos", "opensuse", "arch",
-      "oracle linux"
-    ];
-
-    const normalizedOs = requestedOs.toLowerCase();
-
-    if (!supportedLinux.some((name) => normalizedOs.includes(name))) {
-      errBox.textContent = lang === "ko"
-        ? "무료 Linux 운영체제만 지원합니다. Windows 및 유료 OS는 신청할 수 없습니다. 배포판 이름을 정확히 입력해 주세요."
-        : "Only free Linux distributions are supported. Windows and paid operating systems are not available.";
-      errBox.style.display = "block";
-      return;
-    }
-
-    if (!requestedVersion) {
-      errBox.textContent = lang === "ko"
-        ? "정확한 Linux 운영체제 버전을 입력해 주세요."
-        : "Please enter the exact Linux OS version.";
+    if (!osRequest()) {
+      errBox.textContent = t("os.error");
       errBox.style.display = "block";
       return;
     }
