@@ -207,6 +207,4 @@ window.SERVERS = [
     os: ["Ubuntu 24.04 LTS", "Ubuntu 22.04 LTS", "Debian 12", "Rocky Linux 9", "Proxmox VE 8", "Windows Server (ask)"],
     ctaType: "reserve",
   },
-];
-  
 ]; 
