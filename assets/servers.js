@@ -32,6 +32,40 @@ window.ELGRIM_CONFIG = {
 window.SERVERS = [
    
   {
+  
+    id: "elgrim-gfx-a4000",
+    accent: "gpu",
+    catLabel: "GPU · Bare Metal",
+    catLabelKo: "GPU · 베어메탈",
+    name: { ko: "RTX A4000 GPU 서버", en: "RTX A4000 GPU Server" },
+    location: { ko: "KR · 국내 IDC", en: "KR · Seoul IDC" },
+    status: "on-request",
+    availability: "on-request",
+    tagline: {
+      ko: "AI 개발, 추론, 렌더링, 컴퓨터 비전 및 GPU 연산을 위한 전용 GPU 서버입니다.",
+      en: "Dedicated GPU server for AI development, inference, rendering, computer vision, and GPU computing.",
+    },
+    specs: [
+      { k: "CPU", kKo: "CPU", ko: "AMD EPYC 7642", en: "AMD EPYC 7642" },
+      { k: "Cores / Threads", kKo: "코어 / 스레드", ko: "48코어 / 96스레드", en: "48 Cores / 96 Threads" },
+      { k: "CPU Frequency", kKo: "CPU 주파수", ko: "기본 2.3 GHz / 터보 3.3 GHz", en: "2.3 GHz Base / 3.3 GHz Turbo" },
+      { k: "GPU", kKo: "GPU", ko: "NVIDIA RTX A4000", en: "NVIDIA RTX A4000" },
+      { k: "GPU Memory", kKo: "GPU 메모리", ko: "16 GB GDDR6", en: "16 GB GDDR6" },
+      { k: "RAM", kKo: "메모리", ko: "251 GB DDR4 ECC", en: "251 GB DDR4 ECC" },
+      { k: "Storage", kKo: "저장장치", ko: "3.5 TB 시스템 디스크 + 14.6 TB 데이터 논리 볼륨", en: "3.5 TB system disk + 14.6 TB data logical volume" },
+      { k: "Network Interfaces", kKo: "네트워크 인터페이스", ko: "제공 사양 신청 시 확인", en: "Interface details confirmed on request" },
+      { k: "Internet Bandwidth", kKo: "인터넷 대역폭", ko: "제공 조건은 신청 시 안내", en: "Allocation details confirmed on request" },
+      { k: "IPv4", kKo: "IPv4", ko: "전용 IPv4 제공 여부 신청 시 확인", en: "Dedicated IPv4 availability confirmed on request" },
+      { k: "Access", kKo: "접속 방식", ko: "Root / SSH 제공 범위 신청 시 확인", en: "Root / SSH access confirmed on request" },
+    ],
+    lastVerifiedAt: null,
+    priceKrw: null,
+    priceUsd: null,
+    priceNote: { ko: "월 임대료 · 신청 시 확인", en: "Monthly rental · confirmed on request" },
+    os: ["Ubuntu 24.04 LTS", "Ubuntu 22.04 LTS", "Debian 12", "Rocky Linux 9", "Proxmox VE 8", "Windows Server (ask)"],
+    ctaType: "request",
+  },
+  {
     id: "ellion-xeon-gold-6154-dual",
     accent: "ai",
     catLabel: "CPU · Bare Metal",
@@ -66,39 +100,6 @@ window.SERVERS = [
     ctaType: "request",
   },
 
-  {
-    id: "elgrim-gfx-a4000",
-    accent: "gpu",
-    catLabel: "GPU · Bare Metal",
-    catLabelKo: "GPU · 베어메탈",
-    name: { ko: "RTX A4000 GPU 서버", en: "RTX A4000 GPU Server" },
-    location: { ko: "KR · 국내 IDC", en: "KR · Seoul IDC" },
-    status: "on-request",
-    availability: "on-request",
-    tagline: {
-      ko: "AI 개발, 추론, 렌더링, 컴퓨터 비전 및 GPU 연산을 위한 전용 GPU 서버입니다.",
-      en: "Dedicated GPU server for AI development, inference, rendering, computer vision, and GPU computing.",
-    },
-    specs: [
-      { k: "CPU", kKo: "CPU", ko: "AMD EPYC 7642", en: "AMD EPYC 7642" },
-      { k: "Cores / Threads", kKo: "코어 / 스레드", ko: "48코어 / 96스레드", en: "48 Cores / 96 Threads" },
-      { k: "CPU Frequency", kKo: "CPU 주파수", ko: "기본 2.3 GHz / 터보 3.3 GHz", en: "2.3 GHz Base / 3.3 GHz Turbo" },
-      { k: "GPU", kKo: "GPU", ko: "NVIDIA RTX A4000", en: "NVIDIA RTX A4000" },
-      { k: "GPU Memory", kKo: "GPU 메모리", ko: "16 GB GDDR6", en: "16 GB GDDR6" },
-      { k: "RAM", kKo: "메모리", ko: "251 GB DDR4 ECC", en: "251 GB DDR4 ECC" },
-      { k: "Storage", kKo: "저장장치", ko: "3.5 TB 시스템 디스크 + 14.6 TB 데이터 논리 볼륨", en: "3.5 TB system disk + 14.6 TB data logical volume" },
-      { k: "Network Interfaces", kKo: "네트워크 인터페이스", ko: "제공 사양 신청 시 확인", en: "Interface details confirmed on request" },
-      { k: "Internet Bandwidth", kKo: "인터넷 대역폭", ko: "제공 조건은 신청 시 안내", en: "Allocation details confirmed on request" },
-      { k: "IPv4", kKo: "IPv4", ko: "전용 IPv4 제공 여부 신청 시 확인", en: "Dedicated IPv4 availability confirmed on request" },
-      { k: "Access", kKo: "접속 방식", ko: "Root / SSH 제공 범위 신청 시 확인", en: "Root / SSH access confirmed on request" },
-    ],
-    lastVerifiedAt: null,
-    priceKrw: null,
-    priceUsd: null,
-    priceNote: { ko: "월 임대료 · 신청 시 확인", en: "Monthly rental · confirmed on request" },
-    os: ["Ubuntu 24.04 LTS", "Ubuntu 22.04 LTS", "Debian 12", "Rocky Linux 9", "Proxmox VE 8", "Windows Server (ask)"],
-    ctaType: "request",
-  },
   {
     id: "ellion-web-db-6140",
     accent: "ai",
@@ -207,3 +208,5 @@ window.SERVERS = [
     ctaType: "reserve",
   },
 ];
+  
+]; 
