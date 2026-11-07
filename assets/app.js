@@ -59,7 +59,7 @@ let currency = "USD";
   let priceExpiryTimer;
   const positivePrice = (value) => typeof value === "number" && Number.isFinite(value) && value > 0 ? value : null;
   const fresh = () => ["live", "cache"].includes(catalogueState) && Date.now() - fetchedAt >= 0 && Date.now() - fetchedAt < (CFG.cacheSeconds || 120) * 1000;
-  let SERVERS = BASE.map((s) => ({ ...s }));
+  let SERVERS = BASE.map((s) => ({ ...s, status: "on-request", availability: "on-request" }));
 
   const t = (k, vars) => {
     let s = (I18N[lang] && I18N[lang][k]) ?? (I18N.ko && I18N.ko[k]) ?? k;
@@ -130,8 +130,9 @@ function setCurrency(c) {
     priceExpiryTimer = setTimeout(() => { render(); }, Math.max(0, (CFG.cacheSeconds || 120) * 1000 - (Date.now() - at)) + 10);
     SERVERS = BASE.map(s => {
       const row = data.servers.find(r => r.id === s.id);
-      if (!row) return { ...s, sheetListed: false };
-      const merged = { ...s, sheetListed: true, status: ["available", "reserve", "soldout"].includes(row.status) ? row.status : "unknown",
+      if (!row) return { ...s, sheetListed: false, status: "on-request", availability: "on-request" };
+      const status = ["available", "reserve", "soldout"].includes(row.status) ? row.status : "on-request";
+      const merged = { ...s, sheetListed: true, status, availability: status,
         priceUsd: positivePrice(row.priceUsd), priceKrw: positivePrice(row.priceKrw) };
       ["priceNote", "eta"].forEach(key => {
         const value = row[key];
@@ -154,7 +155,7 @@ function setCurrency(c) {
       try { sessionStorage.setItem(LS.cache, JSON.stringify({ at: fetchedAt, data })); } catch (_) {}
     } catch (_) {
       live = null; fetchedAt = 0; catalogueState = "failed";
-      SERVERS = BASE.map(s => ({ ...s }));
+      SERVERS = BASE.map(s => ({ ...s, status: "on-request", availability: "on-request" }));
       try { sessionStorage.removeItem(LS.cache); } catch (_) {}
     }
   }
@@ -164,15 +165,14 @@ function setCurrency(c) {
     el.textContent = live && fresh() ? t("price.live", { time: new Date(fetchedAt).toLocaleTimeString(lang === "ko" ? "ko-KR" : "en-US", { hour: "2-digit", minute: "2-digit" }) }) : t("price.fallback");
   }
   // Restore the established $185 Dual Xeon offer in cards, modal and payload.
-  // RTX A4000's established $200 quote remains available in offline preview.
-  // Base catalogue specifications and product records are never mutated.
+  // USD prices are maintained independently; do not infer them from KRW prices.
   function quote(s) {
     if (s.id === "ellion-xeon-gold-6154-dual") return { amount: currency === "USD" ? 185 : 290000, approx: false };
     const base = BASE.find(item => item.id === s.id) || s;
-    const usd = positivePrice(s.priceUsd) ?? positivePrice(base.priceUsd) ?? (s.id === "elgrim-gfx-a4000" ? 200 : null);
+    const usd = positivePrice(s.priceUsd) ?? positivePrice(base.priceUsd);
     const krw = positivePrice(s.priceKrw) ?? positivePrice(base.priceKrw);
-    if (currency === "USD") return usd !== null ? { amount: usd, approx: false } : { amount: krw === null ? null : Math.round(krw / fx()), approx: krw !== null };
-    return krw !== null ? { amount: krw, approx: false } : { amount: usd === null ? null : Math.round(usd * fx() / 1000) * 1000, approx: usd !== null };
+    if (currency === "USD") return { amount: usd, approx: false };
+    return { amount: krw, approx: false };
   }
   function priceHtml(s) {
     const { amount, approx } = quote(s);
@@ -180,33 +180,34 @@ function setCurrency(c) {
     const priceNote = fixed ? (lang === "ko" ? "월 고정 임대료" : "Fixed monthly rate") : L(s.priceNote);
     if (amount === null) return '<div class="price">' + t("price.ask") + '</div><div class="price-note">' + priceNote + '</div>';
     const fmt = currency === "KRW" ? "₩" + amount.toLocaleString("ko-KR") : "$" + amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
-    const note = fixed ? priceNote : [approx ? t("price.approx") : "", t("price.vat"), priceNote].filter(Boolean).join(" · ");
+    const note = priceNote;
     return '<div class="price">' + fmt + '<small>' + t("price.mo") + '</small></div><div class="price-note">' + note + '</div>';
   }
 
   /* ---------- 서버 카드 ---------- */
   const grid = $("#plans-grid");
-  const gpuCount = (s) => { const g = s.specs.find((x) => x.k === "GPU"); const m = g && (g.en || "").match(/×(\d+)/); return m ? +m[1] : 1; };
-  const ctaClass = (s) => (s.status === "reserve" ? "btn btn-amber" : s.status === "soldout" ? "btn" : "btn btn-accent");
+  const cardSpecs = (server) => server.displaySpecs || server.specs || [];
+  const gpuCount = (s) => { const g = cardSpecs(s).find((x) => x.k === "GPU"); const m = g && (g.en || "").match(/×(\d+)/); return m ? +m[1] : 1; };
+  const ctaClass = (s) => (s.status === "reserve" ? "btn btn-amber" : ["available", "on-request"].includes(s.status) ? "btn btn-accent" : "btn");
   const ctaType = (s) => (s.status === "reserve" ? "reserve" : "request");
-  const ctaLabel = (s) => (s.status === "soldout" ? t("card.wait") : s.status === "reserve" ? t("card.reserve") : t("card.request"));
+  const ctaLabel = (s) => (s.status === "soldout" ? t("card.wait") : s.status === "reserve" ? t("card.reserve") : s.status === "on-request" ? t("card.onRequest") : t("card.request"));
 
   function render() {
-    let list = SERVERS.filter((s) => filter === "all" || s.status === filter);
+    let list = SERVERS.filter((s) => filter === "all" || (filter === "on-request" ? ["on-request", "reserve"].includes(s.status) : s.status === filter));
     if (sort === "available") list = [...list].sort((a, b) => (a.status === "available" ? -1 : 1) - (b.status === "available" ? -1 : 1));
     if (sort === "gpu") list = [...list].sort((a, b) => gpuCount(b) - gpuCount(a));
     if (!list.length) { grid.innerHTML = `<div class="card empty">${t("empty")}</div>`; return; }
     grid.innerHTML = list.map((s) => `
       <article class="card plan" data-accent="${s.accent}" data-id="${s.id}">
         <div class="plan-top">
-          <span class="badge cat">${s.catLabel}</span>
-          <span class="status ${s.status}">${t("status." + (s.status === "unknown" ? "soldout" : s.status))}</span>
+          <span class="badge cat">${lang === "ko" ? (s.catLabelKo || s.catLabel) : s.catLabel}</span>
+          <span class="status ${s.status}">${t("status." + s.status)}</span>
         </div>
         <div>
           <h3>${L(s.name)}</h3>
         </div>
         <p class="tagline">${L(s.tagline)}</p>
-        <dl class="specs">${s.specs.map((x) => `<dt>${x.k}</dt><dd>${x[lang] || x.ko}</dd>`).join("")}</dl>
+        <dl class="specs">${cardSpecs(s).map((x) => `<dt>${lang === "ko" ? (x.kKo || x.k) : x.k}</dt><dd>${x[lang] || x.ko}</dd>`).join("")}</dl>
 
 <div class="os-row">
   <div>${currentOsHtml(s)}</div>
@@ -268,8 +269,8 @@ function setCurrency(c) {
   function currentOsHtml(server) {
     const os = currentOs(server);
     const value = os.name && os.version ? (os.displayName || os.name) + " " + os.version : t("os.unknown");
-    const evidence = os.verification === "OWNER_CONFIRMED" ? t("os.ownerConfirmed") : os.name ? t("os.legacyUnverified") : t("os.unknown");
-    return '<div class="hint current-os">' + t("os.current") + ': ' + value + (os.kernel ? '<br/>Kernel: ' + os.kernel : '') + '</div><div class="hint os-evidence">' + evidence + '</div>';
+    if (os.verification !== "OWNER_CONFIRMED" || !os.name || !os.version) return "";
+    return '<div class="hint current-os">' + t("os.current") + ': ' + value + (os.kernel ? '<br/>Kernel: ' + os.kernel : '') + '</div>';
   }
   function syncOsFields() {
     const choice = $("#fOs").value, change = choice !== "keep", other = choice === "other";

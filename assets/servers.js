@@ -28,36 +28,39 @@ window.ELGRIM_CONFIG = {
   replyWithin: { ko: "24시간", en: "24 hours" },
 };
 
-/* status: "available" | "reserve" | "soldout" */
+/* Catalog statuses: "available" | "reserve" | "soldout" | "on-request" */
 window.SERVERS = [
    
   {
     id: "ellion-xeon-gold-6154-dual",
     accent: "ai",
     catLabel: "CPU · Bare Metal",
-    name: {   ko: "듀얼 Intel Xeon Gold 6154 · 36코어 / 72스레드",
-  en: "Dual Intel Xeon Gold 6154 · 36 Cores / 72 Threads"},
+    catLabelKo: "CPU · 베어메탈",
+    name: { ko: "듀얼 제온 베어메탈 서버", en: "Dual Xeon Bare Metal Server" },
     location: { ko: "KR · 다우IDC", en: "KR · Korea IDC" },
     status: "available",
+    availability: "available",
     tagline: {
-      ko: "36코어 72스레드, 251GiB RAM의 듀얼 Xeon 물리 서버입니다. 가상화, 데이터 처리 및 CPU 기반 워크로드에 적합합니다.",
-      en: "Dual Xeon bare metal with 36 cores, 72 threads and 251 GiB RAM for virtualization, data processing and CPU workloads.",
+      ko: "가상화, 데이터베이스, CPU 집약형 워크로드를 위한 듀얼 프로세서 베어메탈 서버입니다.",
+      en: "Dedicated dual-processor bare metal server for virtualization, databases, and CPU-intensive workloads.",
     },
     specs: [
-      { k: "CPU", ko: "Intel Xeon Gold 6154 ×2 · 36코어 / 72스레드 (3.0 / 3.7 GHz)", en: "Intel Xeon Gold 6154 ×2 · 36 cores / 72 threads (3.0 / 3.7 GHz)" },
-      { k: "GPU", ko: "연산용 GPU 없음", en: "No compute GPU" },
-      { k: "RAM", ko: "251 GiB (약 256GB급)", en: "251 GiB (approx. 256 GB class)" },
-      { k: "Storage", ko: "447GB + 1.8TB RAID 논리 볼륨 · 실제 RAID 레벨 확인 필요", en: "447 GB + 1.8 TB RAID logical volumes · RAID level to be verified" },
-      { k: "Network", ko: "10GbE 포트 ×2 + 1GbE 포트 ×2 · 인터넷 10Mbps 공유", en: "2×10GbE + 2×1GbE ports · 10Mbps shared Internet" },
-      { k: "Access", ko: "Ubuntu 24.04.3 LTS · SSH", en: "Ubuntu 24.04.3 LTS · SSH" },
+      { k: "CPU", kKo: "CPU", ko: "Intel Xeon Gold 6154 × 2", en: "Intel Xeon Gold 6154 × 2" },
+      { k: "Cores / Threads", kKo: "코어 / 스레드", ko: "36코어 / 72스레드", en: "36 Cores / 72 Threads" },
+      { k: "CPU Frequency", kKo: "CPU 주파수", ko: "기본 3.0 GHz / 터보 3.7 GHz", en: "3.0 GHz Base / 3.7 GHz Turbo" },
+      { k: "GPU", kKo: "GPU", ko: "전용 GPU 없음", en: "No dedicated GPU" },
+      { k: "RAM", kKo: "메모리", ko: "251 GiB", en: "251 GiB" },
+      { k: "Storage", kKo: "저장장치", ko: "447 GB + 1.8 TB 논리 볼륨", en: "447 GB + 1.8 TB logical volumes" },
+      { k: "Network Interfaces", kKo: "네트워크 인터페이스", ko: "2 × 10GbE + 2 × 1GbE", en: "2 × 10GbE + 2 × 1GbE" },
+      { k: "Internet Bandwidth", kKo: "인터넷 대역폭", ko: "제공 조건은 신청 시 안내", en: "Allocation details confirmed on request" },
+      { k: "Access", kKo: "접속 방식", ko: "Linux / SSH 제공 여부 신청 시 확인", en: "Linux / SSH availability confirmed on request" },
+      { k: "OS", kKo: "운영체제", ko: "설치 버전 신청 시 확인", en: "Installed version confirmed on request" },
     ],
-   priceKrw: 290000,
-
-priceUsd: 185,
-priceNote: {
-  ko: "월 고정 임대료 · 할인 기간 없음",
-  en: "Fixed monthly rate"
-},
+    availability: "available",
+    lastVerifiedAt: null,
+    priceKrw: 290000,
+    priceUsd: 185,
+    priceNote: { ko: "월 임대료", en: "Monthly rental" },
 
     os: ["Ubuntu 24.04 LTS"],
     ctaType: "request",
@@ -67,85 +70,66 @@ priceNote: {
     id: "elgrim-gfx-a4000",
     accent: "gpu",
     catLabel: "GPU · Bare Metal",
-    name: { ko: "그래픽 서버 · RTX A4000", en: "Graphics Server · RTX A4000" },
+    catLabelKo: "GPU · 베어메탈",
+    name: { ko: "RTX A4000 GPU 서버", en: "RTX A4000 GPU Server" },
     location: { ko: "KR · 국내 IDC", en: "KR · Seoul IDC" },
-    status: "available",
+    status: "on-request",
+    availability: "on-request",
     tagline: {
-      ko: "EPYC 48코어에 메모리 251GB인 물리 서버를 한 대 통째로 씁니다. LLM 추론이나 렌더링, 게임 서버용으로 쓰기 좋습니다.",
-      en: "Dedicated NVIDIA RTX A4000 16GB GPU server powered by a 48-core AMD EPYC 7642 processor and 251GB ECC RAM. Suitable for AI inference, GPU rendering, computer vision, development environments, and workloads requiring dedicated hardware. Includes root/SSH access and dedicated IPv4 connectivity.",
+      ko: "AI 개발, 추론, 렌더링, 컴퓨터 비전 및 GPU 연산을 위한 전용 GPU 서버입니다.",
+      en: "Dedicated GPU server for AI development, inference, rendering, computer vision, and GPU computing.",
     },
     specs: [
-      { k: "CPU", ko: "AMD EPYC 7642 · 48코어 (2.3 / 3.3 GHz)", en: "AMD EPYC 7642 · 48 cores (2.3 / 3.3 GHz)" },
-      { k: "GPU", ko: "NVIDIA RTX A4000 16GB GDDR6 (Ampere)", en: "NVIDIA RTX A4000 16 GB GDDR6 (Ampere)" },
-      { k: "RAM", ko: "251 GB DDR4 ECC", en: "251 GB DDR4 ECC" },
-      { k: "Storage", ko: "3.5 TB 시스템 디스크 + 14.6 TB RAID", en: "3.5 TB system disk + 14.6 TB RAID" },
-      { k: "Network", ko: "인터넷 10Mbps 공유 · 전용 IPv4 1개", en: "10Mbps shared Internet · 1 dedicated IPv4" },
-      { k: "Access", ko: "Root / SSH · 원격 재설치 지원", en: "Root / SSH · remote reinstall" },
+      { k: "CPU", kKo: "CPU", ko: "AMD EPYC 7642", en: "AMD EPYC 7642" },
+      { k: "Cores / Threads", kKo: "코어 / 스레드", ko: "48코어 / 96스레드", en: "48 Cores / 96 Threads" },
+      { k: "CPU Frequency", kKo: "CPU 주파수", ko: "기본 2.3 GHz / 터보 3.3 GHz", en: "2.3 GHz Base / 3.3 GHz Turbo" },
+      { k: "GPU", kKo: "GPU", ko: "NVIDIA RTX A4000", en: "NVIDIA RTX A4000" },
+      { k: "GPU Memory", kKo: "GPU 메모리", ko: "16 GB GDDR6", en: "16 GB GDDR6" },
+      { k: "RAM", kKo: "메모리", ko: "251 GB DDR4 ECC", en: "251 GB DDR4 ECC" },
+      { k: "Storage", kKo: "저장장치", ko: "3.5 TB 시스템 디스크 + 14.6 TB 데이터 논리 볼륨", en: "3.5 TB system disk + 14.6 TB data logical volume" },
+      { k: "Network Interfaces", kKo: "네트워크 인터페이스", ko: "제공 사양 신청 시 확인", en: "Interface details confirmed on request" },
+      { k: "Internet Bandwidth", kKo: "인터넷 대역폭", ko: "제공 조건은 신청 시 안내", en: "Allocation details confirmed on request" },
+      { k: "IPv4", kKo: "IPv4", ko: "전용 IPv4 제공 여부 신청 시 확인", en: "Dedicated IPv4 availability confirmed on request" },
+      { k: "Access", kKo: "접속 방식", ko: "Root / SSH 제공 범위 신청 시 확인", en: "Root / SSH access confirmed on request" },
     ],
-    priceKrw: null, // 시트에서 덮어씀. null 이면 "가격 문의"
+    lastVerifiedAt: null,
+    priceKrw: null,
     priceUsd: null,
-    priceNote: { ko: "월 단위 · 협의 후 확정", en: "Monthly · finalised on reply" },
+    priceNote: { ko: "월 임대료 · 신청 시 확인", en: "Monthly rental · confirmed on request" },
     os: ["Ubuntu 24.04 LTS", "Ubuntu 22.04 LTS", "Debian 12", "Rocky Linux 9", "Proxmox VE 8", "Windows Server (ask)"],
     ctaType: "request",
   },
- 
   {
     id: "ellion-web-db-6140",
     accent: "ai",
     catLabel: "CPU · Web & Database",
-    name: {
-      ko: "웹·DB 서버 · Xeon Gold 6140",
-      en: "Web & Database Server · Xeon Gold 6140"
-    },
-    location: {
-      ko: "KR · 다우IDC",
-      en: "KR · Korea IDC"
-    },
-    status: "available",
+    catLabelKo: "CPU · 웹·데이터베이스",
+    name: { ko: "웹·데이터베이스 서버", en: "Web & Database Server" },
+    location: { ko: "KR · 다우IDC", en: "KR · Korea IDC" },
+    status: "on-request",
+    availability: "on-request",
     tagline: {
-      ko: "18코어 36스레드 Xeon CPU와 125GiB RAM을 갖춘 웹·데이터베이스 서버입니다. Docker, 웹 애플리케이션 및 개발 환경에 적합합니다.",
-      en: "Xeon server with 18 cores, 36 threads and 125 GiB RAM, suitable for web applications, databases, Docker and development."
+      ko: "웹사이트, 비즈니스 애플리케이션, 데이터베이스, Docker 컨테이너 및 개발 환경을 위한 전용 서버입니다.",
+      en: "Dedicated server for websites, business applications, databases, Docker containers, and development environments.",
     },
     specs: [
-      {
-        k: "CPU",
-        ko: "Intel Xeon Gold 6140 · 18코어 / 36스레드 (2.3 / 3.7 GHz)",
-        en: "Intel Xeon Gold 6140 · 18 cores / 36 threads (2.3 / 3.7 GHz)"
-      },
-      {
-        k: "GPU",
-        ko: "연산용 GPU 없음",
-        en: "No compute GPU"
-      },
-      {
-        k: "RAM",
-        ko: "125GiB (약 128GB급)",
-        en: "125 GiB (approx. 128 GB class)"
-      },
-      {
-        k: "Storage",
-        ko: "OS 약 898GB + 데이터 약 1.6TB",
-        en: "Approx. 898 GB OS + 1.6 TB data"
-      },
-      {
-        k: "Network",
-        ko: "인터넷 10Mbps 공유 · 실제 속도 및 보장 대역폭 확인 필요",
-        en: "10Mbps shared Internet · actual speed and guaranteed bandwidth to be verified"
-      },
-      {
-        k: "Access",
-        ko: "Linux · SSH (OS 변경 협의)",
-        en: "Linux · SSH (OS changes on request)"
-      }
+      { k: "CPU", kKo: "CPU", ko: "Intel Xeon Gold 6140", en: "Intel Xeon Gold 6140" },
+      { k: "Cores / Threads", kKo: "코어 / 스레드", ko: "18코어 / 36스레드", en: "18 Cores / 36 Threads" },
+      { k: "CPU Frequency", kKo: "CPU 주파수", ko: "기본 2.3 GHz / 터보 3.7 GHz", en: "2.3 GHz Base / 3.7 GHz Turbo" },
+      { k: "Mainboard", kKo: "메인보드", ko: "Supermicro X11DPU Rev 1.10", en: "Supermicro X11DPU Rev 1.10" },
+      { k: "GPU", kKo: "GPU", ko: "전용 GPU 없음", en: "No dedicated GPU" },
+      { k: "RAM", kKo: "메모리", ko: "125 GiB", en: "125 GiB" },
+      { k: "Storage", kKo: "저장장치", ko: "OS 약 898 GB + 데이터 약 1.6 TB 볼륨", en: "Approx. 898 GB OS + 1.6 TB data volumes" },
+      { k: "Network Interfaces", kKo: "네트워크 인터페이스", ko: "제공 사양 신청 시 확인", en: "Interface details confirmed on request" },
+      { k: "Internet Bandwidth", kKo: "인터넷 대역폭", ko: "제공 조건은 신청 시 안내", en: "Allocation details confirmed on request" },
+      { k: "Access", kKo: "접속 방식", ko: "Linux / SSH 제공 여부 신청 시 확인", en: "Linux / SSH availability confirmed on request" },
     ],
+    lastVerifiedAt: null,
     priceKrw: 150000,
-    priceUsd: null,
-    priceNote: {
-  ko: "",
-  en: ""
-    },
+    priceUsd: 107,
+    priceNote: { ko: "월 임대료", en: "Monthly rental" },
     os: ["Ubuntu 24.04 LTS"],
-    ctaType: "request"
+    ctaType: "request",
   },
  {
     id: "elgrim-mi325x-8",

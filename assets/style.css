@@ -171,6 +171,7 @@ section.block { padding: 64px 0; border-bottom: 1px solid var(--line); }
 .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; }
 .status.available { color: var(--alien); } .status.available::before { background: var(--alien); box-shadow: 0 0 8px 1px var(--alien); }
 .status.reserve { color: var(--amber); } .status.reserve::before { background: var(--amber); box-shadow: 0 0 8px 1px var(--amber); animation: pulse 1.6s infinite; }
+.status.on-request { color: var(--amber); } .status.on-request::before { background: var(--amber); }
 .status.soldout { color: var(--muted); } .status.soldout::before { background: var(--muted); }
 @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
 .plan h3 { font-size: 19px; line-height: 1.3; }
