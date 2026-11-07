@@ -35,6 +35,33 @@
     "source": "Owner-provided confirmed OS information",
     "verification": "OWNER_CONFIRMED",
     "ipMappingStatus": "UNVERIFIED"
+  },
+  "elgrim-mi325x-8": {
+    "name": null,
+    "displayName": null,
+    "version": null,
+    "kernel": null,
+    "source": "Reserved product - OS selected upon provisioning",
+    "verification": "PROVISIONABLE",
+    "ipMappingStatus": "PROVISIONABLE"
+  },
+  "elgrim-rtx4090": {
+    "name": null,
+    "displayName": null,
+    "version": null,
+    "kernel": null,
+    "source": "Reserved product - OS selected upon provisioning",
+    "verification": "PROVISIONABLE",
+    "ipMappingStatus": "PROVISIONABLE"
+  },
+  "elgrim-l40s-6000ada": {
+    "name": null,
+    "displayName": null,
+    "version": null,
+    "kernel": null,
+    "source": "Reserved product - OS selected upon provisioning",
+    "verification": "PROVISIONABLE",
+    "ipMappingStatus": "PROVISIONABLE"
   }
 };
   // Keep the existing public configuration blob unchanged; apply OS facts and Linux-only options here.
@@ -268,11 +295,18 @@ function setCurrency(c) {
   }
   function currentOsHtml(server) {
     const os = currentOs(server);
-    const value = os.name && os.version ? (os.displayName || os.name) + " " + os.version : t("os.unknown");
-    // Display current OS if available (for ellion-xeon-gold-6154-dual and others with verified OS)
-    if (!os.name || !os.version) return "";
-    const changeNote = lang === "ko" ? " (요청 시 변경 가능)" : " (Change available upon request)";
-    return '<div class="hint current-os">' + t("os.current") + ': ' + value + changeNote + (os.kernel ? '<br/>Kernel: ' + os.kernel : '') + '</div>';
+    // Handle provisioned/reserved products
+    if (os.verification === "PROVISIONABLE") {
+      const provisionText = t("os.provisionable");
+      return '<div class="hint current-os">' + t("os.current") + ': ' + provisionText + '</div>';
+    }
+    // Handle confirmed OS (installed)
+    if (os.name && os.version) {
+      const value = (os.displayName || os.name) + " " + os.version;
+      const changeNote = lang === "ko" ? " (요청 시 변경 가능)" : " (Change available upon request)";
+      return '<div class="hint current-os">' + t("os.current") + ': ' + value + changeNote + (os.kernel ? '<br/>Kernel: ' + os.kernel : '') + '</div>';
+    }
+    return "";
   }
   function syncOsFields() {
     const choice = $("#fOs").value, change = choice !== "keep", other = choice === "other";
