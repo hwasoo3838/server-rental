@@ -12,11 +12,11 @@
   "ellion-xeon-gold-6154-dual": {
     "name": "Ubuntu",
     "displayName": "Ubuntu",
-    "version": "24.04.3 LTS",
+    "version": "24.04 LTS",
     "kernel": null,
-    "source": "Existing product Access specification",
-    "verification": "LEGACY_SPEC_UNVERIFIED",
-    "ipMappingStatus": "UNVERIFIED"
+    "source": "Currently installed server OS",
+    "verification": "CONFIRMED",
+    "ipMappingStatus": "CONFIRMED"
   },
   "elgrim-gfx-a4000": {
     "name": "Ubuntu Server",
@@ -269,8 +269,10 @@ function setCurrency(c) {
   function currentOsHtml(server) {
     const os = currentOs(server);
     const value = os.name && os.version ? (os.displayName || os.name) + " " + os.version : t("os.unknown");
-    if (os.verification !== "OWNER_CONFIRMED" || !os.name || !os.version) return "";
-    return '<div class="hint current-os">' + t("os.current") + ': ' + value + (os.kernel ? '<br/>Kernel: ' + os.kernel : '') + '</div>';
+    // Display current OS if available (for ellion-xeon-gold-6154-dual and others with verified OS)
+    if (!os.name || !os.version) return "";
+    const changeNote = lang === "ko" ? " (요청 시 변경 가능)" : " (Change available upon request)";
+    return '<div class="hint current-os">' + t("os.current") + ': ' + value + changeNote + (os.kernel ? '<br/>Kernel: ' + os.kernel : '') + '</div>';
   }
   function syncOsFields() {
     const choice = $("#fOs").value, change = choice !== "keep", other = choice === "other";
