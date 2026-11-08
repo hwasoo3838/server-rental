@@ -65,6 +65,7 @@ window.SERVERS = [
   },
   {
     id: "ellion-xeon-gold-6154-dual",
+    networkSnapshot: { downloadMbps: 943.79, uploadMbps: 941.24, updatedAt: "2026-11-08 18:00" },
     accent: "ai",
     catLabel: "CPU · Bare Metal",
     catLabelKo: "CPU · 베어메탈",
@@ -96,6 +97,7 @@ window.SERVERS = [
 
   {
     id: "ellion-web-db-6140",
+    networkSnapshot: { downloadMbps: 942.29, uploadMbps: 941.28, updatedAt: "2026-11-08 18:00" },
     accent: "ai",
     catLabel: "CPU · Bare Metal",
     catLabelKo: "CPU · 베어메탈",
