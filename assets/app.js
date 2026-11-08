@@ -2,8 +2,7 @@
    Ellion Bare Metal - 프론트엔드 로직 (백엔드 없음, GitHub Pages)
    - KO / EN에 KRW / USD 연동 (localStorage + ?lang= 쿼리)
    - 가격/상태는 Google Sheet(Apps Script GET ?action=servers) 에서 실시간 로드
-   - 전송: (1) FormSubmit → 시트 config 의 notify_email / contact_email 로 메일  (2) Apps Script → logs 시트
-   - 실패 시 mailto: 폴백 + localStorage 임시 보관
+   - 신청 내용은 고객이 메일 앱에서 직접 발송
    ============================================================ */
 (function () {
   "use strict";
@@ -70,7 +69,7 @@
   const I18N = window.I18N || {};
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const LS = { logs: "elgrim.pendingLogs", lang: "elgrim.lang", cur: "elgrim.currency", cache: "elgrim.serversCache" };
+  const LS = { lang: "elgrim.lang", cur: "elgrim.currency", cache: "elgrim.serversCache" };
   const q = new URLSearchParams(location.search);
 
   /* ---------- 상태 ---------- */
@@ -110,8 +109,6 @@ saveLanguage();
   const liveCfg = (k) => String((live && live.config && live.config[k]) ?? "").trim();
   // 연락 메일: 시트 config.contact_email > servers.js 기본값. 화면 표시, mailto, 메일 수신 모두 이 값을 따름
   const contactEmail = () => liveCfg("contact_email") || CFG.contactEmail;
-  // 요청 메일 수신: config.notify_email 이 있으면 그 주소, 없으면 contact_email
-  const notifyEmail = () => liveCfg("notify_email") || contactEmail();
   const fx = () => Number(live && live.config && live.config.fx_usd_krw) || CFG.fxUsdKrw || 1400;
 
   /* ---------- i18n 적용 ---------- */
@@ -133,6 +130,7 @@ saveLanguage();
     $("#useTags").innerHTML = t("use.tags").map((x) => `<span>${x}</span>`).join("");
     $("#faqList").innerHTML = t("faq.items").map(([qq, a]) => `<details><summary>${qq}</summary><div class="ans">${a}</div></details>`).join("");
     $$("#faqList [data-reply-within]").forEach((el) => (el.textContent = replyWithin()));
+    $$("#faqList [data-mail-text]").forEach((el) => (el.textContent = contactEmail()));
     fillSelect($("#fPurpose"), t("form.purposes"));
     fillSelect($("#fDuration"), t("form.durations"));
     document.title = t("meta.title");
@@ -173,7 +171,10 @@ $("#langSeg").addEventListener("click", (e) => {
     priceExpiryTimer = setTimeout(() => { render(); }, Math.max(0, (CFG.cacheSeconds || 120) * 1000 - (Date.now() - at)) + 10);
     SERVERS = BASE.map(s => {
       const row = data.servers.find(r => r.id === s.id);
-      if (!row) return { ...s, sheetListed: false, status: "on-request", availability: "on-request" };
+      if (!row) {
+        const status = s.unlistedStatus === "available" ? "available" : "on-request";
+        return { ...s, sheetListed: false, status, availability: status };
+      }
       const status = ["available", "reserve", "soldout"].includes(row.status) ? row.status : "on-request";
       const merged = { ...s, sheetListed: true, status, availability: status,
         priceUsd: positivePrice(row.priceUsd), priceKrw: positivePrice(row.priceKrw) };
@@ -367,22 +368,18 @@ $("#modalServer").innerHTML = `
     $("#fServerName").value = L(server.name);
 
     $("#submitBtn").textContent = t($("#submitBtn").disabled ? "form.sending" : isReserve ? "form.submit.reserve" : "form.submit.request");
-    if (current.result) renderDone();
+    if (current.draft) {
+      current.draft = buildPayload();
+      renderDraft(current.draft);
+    }
     if (current.error === "os") errBox.textContent = t("os.error");
-    if (current.error === "send") renderSendError(current.failedPayload);
   }
-  function renderSendError(p) {
-    const href = `mailto:${contactEmail()}?subject=${encodeURIComponent(mailSubject(p))}&body=${encodeURIComponent(mailBody(p))}`;
-    errBox.innerHTML = t("form.fail", { href });
-    errBox.style.display = "block";
-  }
-  function renderDone() {
-    const { p, mail } = current.result;
-    const r = isR(p);
-    $("#doneTitle").textContent = t(r ? "done.reserve.title" : "done.request.title");
-    $("#doneMsg").innerHTML = r
-      ? t("done.reserve.msg", { server: L(current.server.name), email: p.email }) + (mail.ok ? "" : t("done.reserve.logonly"))
-      : t("done.request.msg", { contact: contactEmail(), within: replyWithin(), email: p.email }) + t("done.payment");
+  function renderDraft(p) {
+    const subject = mailSubject(p);
+    const body = mailBody(p);
+    $("#draftLink").href = `mailto:${contactEmail()}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    $("#draftText").value = `To: ${contactEmail()}\nSubject: ${subject}\n\n${body}`;
+    $("#mailDraft").hidden = false;
   }
   function openModal(type, serverId) {
     const server = SERVERS.find((s) => s.id === serverId) || SERVERS[0];
@@ -403,6 +400,7 @@ $("#modalServer").innerHTML = `
     sb.textContent = t(isReserve ? "form.submit.reserve" : "form.submit.request");
     sb.className = isReserve ? "btn btn-amber" : "btn btn-accent";
     errBox.style.display = "none";
+    $("#mailDraft").hidden = true;
     form.style.display = "grid";
     done.style.display = "none";
     modal.classList.add("open");
@@ -492,36 +490,11 @@ Email: p.email,
   });
   const mailBody = (p) => Object.entries(mailFields(p)).map(([k, v]) => `${k}: ${v}`).join("\n");
 
-  // FormSubmit 주소의 {email} 을 현재 수신 메일로 치환 (시트 변경이 발송 대상에도 반영되도록)
-  const mailUrl = () => (CFG.mailEndpoint || "").split("{email}").join(notifyEmail());
-  async function sendMail(p) {
-    const url = mailUrl();
-    if (!url) return { ok: false, skipped: true };
-    const body = { _subject: mailSubject(p), _replyto: p.email, _template: "table", _captcha: "false", ...mailFields(p) };
-    const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) });
-    const j = await r.json().catch(() => ({}));
-    return { ok: r.ok && String(j.success) !== "false", res: j };
-  }
-  async function sendLog(p) {
-    if (!CFG.logEndpoint) { queueLocal(p); return { ok: false, skipped: true }; }
-    try {
-      await fetch(CFG.logEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ key: CFG.logKey || "", ...p }) });
-      return { ok: true };
-    } catch (e) { queueLocal(p); return { ok: false, error: String(e) }; }
-  }
-  function queueLocal(p) {
-    try { const arr = JSON.parse(localStorage.getItem(LS.logs) || "[]"); arr.push(p); localStorage.setItem(LS.logs, JSON.stringify(arr.slice(-200))); } catch (_) {}
-  }
-  async function flushLocal() {
-    if (!CFG.logEndpoint) return;
-    let arr = [];
-    try { arr = JSON.parse(localStorage.getItem(LS.logs) || "[]"); } catch (_) {}
-    if (!arr.length) return;
-    localStorage.removeItem(LS.logs);
-    for (const p of arr) await sendLog({ ...p, replayed: true });
-  }
-
-  form.addEventListener("submit", async (e) => {
+  for (const event of ["input", "change"]) form.addEventListener(event, () => {
+    if (current) current.draft = null;
+    $("#mailDraft").hidden = true;
+  });
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
     errBox.style.display = "none";
     current.error = null;
@@ -535,34 +508,8 @@ Email: p.email,
       return;
     }
 
-    const btn = $("#submitBtn");
-
-    btn.disabled = true; btn.textContent = t("form.sending");
-    const p = buildPayload();
-    const [mail, log] = await Promise.all([sendMail(p).catch((err) => ({ ok: false, error: String(err) })), sendLog(p)]);
-    btn.disabled = false; btn.textContent = t(current.type === "reserve" ? "form.submit.reserve" : "form.submit.request");
-
-    if (!mail.ok && !log.ok) {
-      current.error = "send";
-      current.failedPayload = p;
-      renderSendError(p);
-      return;
-    }
-     
-    // Google Ads: 서버 임대 신청 완료 전환
-    if (typeof gtag === "function") {
-      gtag("event", "conversion", {
-        send_to: "AW-18530044178/n7sfCLfKxq8dEJKS6INF"
-      });
-    }
-
-    const r = isR(p);
-    current.result = { p, mail };
-    renderDone();
-    form.style.display = "none";
-    done.style.display = "block";
-    form.reset();
-    toast(t(r ? "toast.reserve" : "toast.request"));
+    current.draft = buildPayload();
+    renderDraft(current.draft);
   });
 
   /* ---------- 토스트 ---------- */
@@ -580,5 +527,5 @@ Email: p.email,
   /* ---------- 시작 ---------- */
   applyI18n();
   render();
-  loadLive(false).then(() => { applyI18n(); render(); flushLocal(); });
+  loadLive(false).then(() => { applyI18n(); render(); });
 })();

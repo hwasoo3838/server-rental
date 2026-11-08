@@ -22,8 +22,6 @@
   s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(ID);
   document.head.appendChild(s);
 
-  function pref(key, def) { try { return localStorage.getItem(key) || def; } catch (e) { return def; } }
-
   gtag("js", new Date());
   gtag("config", ID, {
     anonymize_ip: true,
@@ -64,14 +62,4 @@
     if (e.target && e.target.id === "sortSel") ev("sort_change", { sort: e.target.value });
   }, true);
 
-  // 신청 폼 제출 (검증 통과 시에만 submit 이벤트가 발생) - 입력값은 보내지 않음
-  document.addEventListener("submit", function (e) {
-    if (!e.target || e.target.id !== "reqForm") return;
-    var title = document.getElementById("modalServer");
-    ev("generate_lead", {
-      form_type: (document.getElementById("submitBtn") || {}).className || "",
-      server_name: title ? (title.textContent || "").slice(0, 80) : "",
-      currency: pref("elgrim.currency", ""),
-    });
-  }, true);
 })();

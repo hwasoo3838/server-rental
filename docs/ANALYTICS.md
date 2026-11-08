@@ -19,14 +19,14 @@
 ## 수집 이벤트
 
 기본(향상된 측정): `page_view`, `scroll`, `click`(이탈 링크) 등.
-커스텀: `open_request_form`, `generate_lead`, `language_change`, `currency_change`, `filter_status`, `sort_change`, `nav_click`.
+커스텀: `open_request_form`, `language_change`, `currency_change`, `filter_status`, `sort_change`, `nav_click`.
 폼 입력값(이메일, 이름, 메시지)은 전송하지 않습니다. DNT(Do Not Track) 브라우저는 수집하지 않습니다.
 
 ## GA4 에서 확인할 것
 
 - 실시간: GA4 > 보고서 > 실시간 (방문 직후 즉시 표시)
 - 접속자 정보: 보고서 > 사용자 > 인구통계 세부정보(국가/도시), 기술(기기/브라우저), 획득(유입 경로)
-- 전환: 관리 > 이벤트 에서 `generate_lead` 를 "주요 이벤트"로 표시하면 신청 수가 전환으로 집계됩니다.
+- 신청은 고객 메일 앱에서 직접 발송되므로 사이트에서 실제 발송이나 접수를 확인할 수 없습니다. 초안 생성만으로 `generate_lead`나 Google Ads 신청 완료 전환을 기록하지 않습니다.
 
 ## 주의
 

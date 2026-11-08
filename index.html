@@ -50,7 +50,7 @@
 <div class="statusbar">
   <span data-i18n="status.current">
     Bare Metal Servers ·
-    Secure PayPal Payment Links Available After Request Confirmation ·
+    PayPal or bank transfer arranged after request confirmation ·
     Contact:
   </span>
   <a href="mailto:help@elliongpu.com">help@elliongpu.com</a>
@@ -167,7 +167,7 @@
       <div class="wrap">
         <div class="sec-head">
           <h2 data-i18n="how.h2">이용 방법</h2>
-          <p data-i18n="how.p">아직 온라인 결제는 없습니다. 메일로 가격과 기간을 정한 뒤 계좌이체로 결제합니다.</p>
+          <p data-i18n="how.p">After confirming your request, we agree the price and term by email and arrange PayPal or bank transfer.</p>
         </div>
         <div class="steps">
           <div class="card step"><div class="num">STEP 01</div><h3 data-i18n="how.s1h">서버 고르기</h3><p data-i18n="how.s1p"></p></div>
@@ -339,6 +339,14 @@
           <span class="hint" data-i18n-html="form.hint"></span>
           <button type="submit" class="btn btn-accent" id="submitBtn"></button>
         </div>
+        <div id="mailDraft" hidden>
+          <p class="hint" data-i18n="form.draftNotice"></p>
+          <a class="btn btn-accent" id="draftLink" data-i18n="form.openMail"></a>
+          <div class="field">
+            <label for="draftText" data-i18n="form.copyDraft"></label>
+            <textarea id="draftText" rows="8" readonly></textarea>
+          </div>
+        </div>
       </form>
 
       <div class="done" id="done">
@@ -354,10 +362,10 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="assets/servers.js?v=20261108-three-snapshots-dated"></script>
-  <script src="assets/analytics.js?v=20260930a"></script>
-  <script src="assets/i18n.js?v=20261108-language-products"></script>
-  <script src="assets/network-snapshot.js?v=20261108-three-snapshots-dated"></script>
-  <script src="assets/app.js?v=20261108-language-products"></script>
+  <script src="assets/servers.js?v=20261108-xeon-6426y"></script>
+  <script src="assets/analytics.js?v=20261108-mail-draft"></script>
+  <script src="assets/i18n.js?v=20261108-mail-draft"></script>
+  <script src="assets/network-snapshot.js?v=20261108-xeon-6426y"></script>
+  <script src="assets/app.js?v=20261108-xeon-6426y"></script>
 </body>
 </html>
