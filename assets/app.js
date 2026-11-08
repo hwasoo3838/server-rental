@@ -1,6 +1,6 @@
 /* ============================================================
    Ellion Bare Metal - 프론트엔드 로직 (백엔드 없음, GitHub Pages)
-   - KO / EN, KRW / USD 토글 (localStorage + ?lang= ?cur= 쿼리)
+   - KO / EN에 KRW / USD 연동 (localStorage + ?lang= 쿼리)
    - 가격/상태는 Google Sheet(Apps Script GET ?action=servers) 에서 실시간 로드
    - 전송: (1) FormSubmit → 시트 config 의 notify_email / contact_email 로 메일  (2) Apps Script → logs 시트
    - 실패 시 mailto: 폴백 + localStorage 임시 보관
@@ -75,8 +75,19 @@
 
   /* ---------- 상태 ---------- */
 
-let lang = q.get("lang") === "ko" ? "ko" : "en";
-let currency = "USD";
+function savedLanguage() {
+  try { return localStorage.getItem(LS.lang); } catch (_) { return null; }
+}
+const validLanguage = (value) => value === "ko" || value === "en";
+let lang = validLanguage(q.get("lang")) ? q.get("lang") : validLanguage(savedLanguage()) ? savedLanguage() : "en";
+let currency = lang === "ko" ? "KRW" : "USD";
+function saveLanguage() {
+  try {
+    localStorage.setItem(LS.lang, lang);
+    localStorage.setItem(LS.cur, currency);
+  } catch (_) { /* Storage can be blocked; language switching still works. */ }
+}
+saveLanguage();
 
   let filter = "all";
   let sort = "default";
@@ -115,8 +126,10 @@ let currency = "USD";
     $$("[data-mail]").forEach((a) => (a.href = "mailto:" + contactEmail()));
     $$("[data-mail-text]").forEach((el) => (el.textContent = contactEmail()));
     $$("[data-reply-within]").forEach((el) => (el.textContent = replyWithin()));
-    $$("#langSeg button").forEach((b) => b.classList.toggle("on", b.dataset.lang === lang));
-    // English-only site: currency selector removed
+    $$("#langSeg button").forEach((b) => {
+      b.classList.toggle("on", b.dataset.lang === lang);
+      b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+    });
     $("#useTags").innerHTML = t("use.tags").map((x) => `<span>${x}</span>`).join("");
     $("#faqList").innerHTML = t("faq.items").map(([qq, a]) => `<details><summary>${qq}</summary><div class="ans">${a}</div></details>`).join("");
     $$("#faqList [data-reply-within]").forEach((el) => (el.textContent = replyWithin()));
@@ -126,24 +139,27 @@ let currency = "USD";
     renderPriceSource();
   }
   function fillSelect(sel, arr) {
-    const v = sel.value;
+    const index = sel.selectedIndex;
     sel.innerHTML = arr.map((o) => `<option>${o}</option>`).join("");
-    if (arr.includes(v)) sel.value = v;
+    if (index >= 0 && index < arr.length) sel.selectedIndex = index;
   }
 
 function setLang(l) {
-  lang = l === "ko" ? "ko" : "en";
-  localStorage.setItem(LS.lang, lang);
+  if (!validLanguage(l)) return;
+  lang = l;
+  currency = lang === "ko" ? "KRW" : "USD";
+  saveLanguage();
+  // Keep an explicit URL language aligned with the latest user selection.
+  const url = new URL(location.href);
+  url.searchParams.set("lang", lang);
+  history.replaceState(null, "", url);
   applyI18n();
   render();
 }
-
-function setCurrency(c) {
-  currency = "USD";
-  localStorage.setItem(LS.cur, "USD");
-  render();
-}
-
+$("#langSeg").addEventListener("click", (e) => {
+  const button = e.target.closest("button[data-lang]");
+  if (button) setLang(button.dataset.lang);
+});
 
   $("#year").textContent = new Date().getFullYear();
 
@@ -191,12 +207,12 @@ function setCurrency(c) {
     if (!el) return;
     el.textContent = live && fresh() ? t("price.live", { time: new Date(fetchedAt).toLocaleTimeString(lang === "ko" ? "ko-KR" : "en-US", { hour: "2-digit", minute: "2-digit" }) }) : t("price.fallback");
   }
-  // Restore the established $185 Dual Xeon offer in cards, modal and payload.
+  // Use approved product prices consistently in cards, modal and payload.
   // USD prices are maintained independently; do not infer them from KRW prices.
   function quote(s) {
-    if (s.id === "ellion-xeon-gold-6154-dual") return { amount: currency === "USD" ? 185 : 290000, approx: false };
     const base = BASE.find(item => item.id === s.id) || s;
-    const usd = positivePrice(s.priceUsd) ?? positivePrice(base.priceUsd);
+    if (s.id === "ellion-xeon-gold-6154-dual") return { amount: positivePrice(currency === "USD" ? base.priceUsd : base.priceKrw), approx: false };
+    const usd = base.fixedUsdPrice ? positivePrice(base.priceUsd) : positivePrice(s.priceUsd) ?? positivePrice(base.priceUsd);
     const krw = positivePrice(s.priceKrw) ?? positivePrice(base.priceKrw);
     if (currency === "USD") return { amount: usd, approx: false };
     return { amount: krw, approx: false };
@@ -223,7 +239,8 @@ function setCurrency(c) {
     let list = SERVERS.filter((s) => filter === "all" || (filter === "on-request" ? ["on-request", "reserve"].includes(s.status) : s.status === filter));
     if (sort === "available") list = [...list].sort((a, b) => (a.status === "available" ? -1 : 1) - (b.status === "available" ? -1 : 1));
     if (sort === "gpu") list = [...list].sort((a, b) => gpuCount(b) - gpuCount(a));
-    if (!list.length) { grid.innerHTML = `<div class="card empty">${t("empty")}</div>`; return; }
+    if (!list.length) grid.innerHTML = `<div class="card empty">${t("empty")}</div>`;
+    else
     grid.innerHTML = list.map((s) => `
       <article class="card plan" data-accent="${s.accent}" data-id="${s.id}">
         <div class="plan-top">
@@ -234,23 +251,23 @@ function setCurrency(c) {
           <h3>${L(s.name)}</h3>
         </div>
         <p class="tagline">${L(s.tagline)}</p>
-        <dl class="specs">${cardSpecs(s).map((x) => `<dt>${lang === "ko" ? (x.kKo || x.k) : x.k}</dt><dd>${x[lang] || x.ko}</dd>`).join("")}</dl>
+        <dl class="specs">${cardSpecs(s).map((x) => `<dt>${lang === "ko" ? (x.kKo || x.k) : x.k}</dt><dd>${x[lang] || x.ko}</dd>`).join("")}${s.osInSpecs ? `<dt>${t("os.current")}</dt><dd>${currentOsHtml(s, true)}</dd>` : ""}</dl>
 
-<div class="os-row">
+${s.osInSpecs ? "" : `<div class="os-row">
   <div>${currentOsHtml(s)}</div>
   <span class="hint">
     ${lang === "ko"
       ? "현재 OS 유지 또는 Linux OS 변경 요청"
       : "Keep current OS or request a Linux OS change"}
   </span>
-</div>
+</div>`}
 
 
-${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-performance" data-network-product="${s.id}" aria-label="Network Performance">${window.NetworkSnapshot.html(s.networkSnapshot, lang)}</section>` : ""}
+${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-performance" data-network-product="${s.id}" aria-label="${t("network.title")}">${window.NetworkSnapshot.html(s.networkSnapshot, lang)}</section>` : ""}
 
 <div class="plan-foot plan-foot-premium">
   <div class="plan-price-area">
-    <span class="plan-price-label">MONTHLY RENTAL</span>
+    <span class="plan-price-label">${t("price.label")}</span>
     ${priceHtml(s)}
   </div>
   <button
@@ -265,8 +282,7 @@ ${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-perform
     renderPriceSource();
     if (current && modal.classList.contains("open")) {
       current.server = SERVERS.find(s => s.id === current.server.id) || current.server;
-      const priceArea = $("#modalServer .modal-server-price");
-      if (priceArea) priceArea.innerHTML = priceHtml(current.server);
+      renderModal();
     }
   }
 
@@ -295,7 +311,7 @@ ${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-perform
     // Explicit product OS facts only. Never infer installed OS from offered options.
     return server.currentOs || { name: null, displayName: null, version: null, kernel: null, source: null, verification: "UNVERIFIED", ipMappingStatus: "UNVERIFIED" };
   }
-  function currentOsHtml(server) {
+  function currentOsHtml(server, valueOnly = false) {
     const os = currentOs(server);
     // Handle provisioned/reserved products
     if (os.verification === "PROVISIONABLE") {
@@ -306,6 +322,7 @@ ${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-perform
     if (os.name && os.version) {
       const value = (os.displayName || os.name) + " " + os.version;
       const changeNote = lang === "ko" ? " (요청 시 변경 가능)" : " (Change available upon request)";
+      if (valueOnly) return value + changeNote;
       return '<div class="hint current-os">' + t("os.current") + ': ' + value + changeNote + (os.kernel ? '<br/>Kernel: ' + os.kernel : '') + '</div>';
     }
     return "";
@@ -331,9 +348,8 @@ ${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-perform
   }
 
 
-  function openModal(type, serverId) {
-    const server = SERVERS.find((s) => s.id === serverId) || SERVERS[0];
-    current = { server, type };
+  function renderModal() {
+    const { server, type } = current;
     const isReserve = type === "reserve";
     $("#modalLabel").textContent = t(isReserve ? "modal.reserve.label" : "modal.request.label");
     $("#modalTitle").textContent = t(isReserve ? "modal.reserve.title" : "modal.request.title");
@@ -349,6 +365,30 @@ $("#modalServer").innerHTML = `
     $("#fType").value = type;
     $("#fServerId").value = server.id;
     $("#fServerName").value = L(server.name);
+
+    $("#submitBtn").textContent = t($("#submitBtn").disabled ? "form.sending" : isReserve ? "form.submit.reserve" : "form.submit.request");
+    if (current.result) renderDone();
+    if (current.error === "os") errBox.textContent = t("os.error");
+    if (current.error === "send") renderSendError(current.failedPayload);
+  }
+  function renderSendError(p) {
+    const href = `mailto:${contactEmail()}?subject=${encodeURIComponent(mailSubject(p))}&body=${encodeURIComponent(mailBody(p))}`;
+    errBox.innerHTML = t("form.fail", { href });
+    errBox.style.display = "block";
+  }
+  function renderDone() {
+    const { p, mail } = current.result;
+    const r = isR(p);
+    $("#doneTitle").textContent = t(r ? "done.reserve.title" : "done.request.title");
+    $("#doneMsg").innerHTML = r
+      ? t("done.reserve.msg", { server: L(current.server.name), email: p.email }) + (mail.ok ? "" : t("done.reserve.logonly"))
+      : t("done.request.msg", { contact: contactEmail(), within: replyWithin(), email: p.email }) + t("done.payment");
+  }
+  function openModal(type, serverId) {
+    const server = SERVERS.find((s) => s.id === serverId) || SERVERS[0];
+    current = { server, type };
+    const isReserve = type === "reserve";
+    renderModal();
 
     $("#fOs").value = "keep";
     $("#fOsVersion").value = "";
@@ -484,10 +524,12 @@ Email: p.email,
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     errBox.style.display = "none";
+    current.error = null;
     
     if (!form.reportValidity()) return;
 
     if (!osRequest()) {
+      current.error = "os";
       errBox.textContent = t("os.error");
       errBox.style.display = "block";
       return;
@@ -495,16 +537,15 @@ Email: p.email,
 
     const btn = $("#submitBtn");
 
-    const label = btn.textContent;
     btn.disabled = true; btn.textContent = t("form.sending");
     const p = buildPayload();
     const [mail, log] = await Promise.all([sendMail(p).catch((err) => ({ ok: false, error: String(err) })), sendLog(p)]);
-    btn.disabled = false; btn.textContent = label;
+    btn.disabled = false; btn.textContent = t(current.type === "reserve" ? "form.submit.reserve" : "form.submit.request");
 
     if (!mail.ok && !log.ok) {
-      const href = `mailto:${contactEmail()}?subject=${encodeURIComponent(mailSubject(p))}&body=${encodeURIComponent(mailBody(p))}`;
-      errBox.innerHTML = t("form.fail", { href });
-      errBox.style.display = "block";
+      current.error = "send";
+      current.failedPayload = p;
+      renderSendError(p);
       return;
     }
      
@@ -516,13 +557,9 @@ Email: p.email,
     }
 
     const r = isR(p);
-    $("#doneTitle").textContent = t(r ? "done.reserve.title" : "done.request.title");
-    $("#doneMsg").innerHTML = r
-      ? t("done.reserve.msg", { server: p.serverName, email: p.email }) + (mail.ok ? "" : t("done.reserve.logonly"))
-: t("done.request.msg", { contact: contactEmail(), within: replyWithin(), email: p.email })
-  + (lang === "ko"
-    ? "<p style='margin-top:16px'><strong>결제 안내</strong><br>신청 승인 후 계좌이체 정보를 이메일로 안내해 드립니다. 이용료는 매월 선납이며, 입금 확인 후 서버가 제공됩니다.</p>"
-    : "<p style='margin-top:16px'><strong>Payment Information</strong><br>Once your request is approved, we will email you a PayPal payment link. Monthly subscription options will be confirmed before payment.</p>");    form.style.display = "none";
+    current.result = { p, mail };
+    renderDone();
+    form.style.display = "none";
     done.style.display = "block";
     form.reset();
     toast(t(r ? "toast.reserve" : "toast.request"));

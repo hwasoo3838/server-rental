@@ -282,11 +282,11 @@ test('기존 상품 가격 유지 (Xeon: ₩290,000)', () => {
   );
 });
 
-test('기존 상품 가격 유지 (Xeon: $185)', () => {
+test('기존 상품 가격 유지 (Xeon: $175)', () => {
   const serversContent = readFile(path.join(basePath, 'assets/servers.js'));
   assert(
-    serversContent.includes('185'),
-    'Xeon USD 가격(185) 없음 - 가격이 변경됨'
+    serversContent.includes('175'),
+    'Xeon USD 가격(175) 없음 - 가격이 변경됨'
   );
 });
 

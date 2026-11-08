@@ -398,3 +398,13 @@ form.req { display: grid; gap: 14px; margin-top: 18px; }
 .network-snapshot-metric dd span { color: var(--muted); font-size: 12px; }
 .network-snapshot-updated { margin: 12px 0 0; color: var(--muted); font-size: 12px; }
 @media (max-width: 380px) { .network-snapshot-grid { gap: 8px; } .network-snapshot-metric { padding: 14px 8px; } .network-snapshot-metric strong { font-size: 25px; } }
+
+/* GPU-001: keep language controls and menu visible on narrow phones. */
+@media (max-width: 380px) {
+  header.site .wrap { gap: 6px; }
+  .logo { font-size: 14px; gap: 6px; }
+  .logo-mark { width: 26px; height: 26px; flex-shrink: 0; }
+  #langSeg button { font-size: 11px; padding: 4px 6px; }
+  .hdr-right { gap: 4px; }
+  .hdr-right .menu-btn { padding: 0 10px; }
+}

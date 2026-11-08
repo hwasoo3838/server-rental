@@ -1,6 +1,21 @@
 /* Ellion Bare Metal - UI 문구 (ko / en) */
 window.I18N = {
   ko: {
+    "network.title": "네트워크 성능",
+
+    "status.current": "베어메탈 서버 · 신청 확인 후 안전한 PayPal 결제 링크 제공 · 문의:",
+    "price.label": "월 임대료",
+    "form.username": "희망 로그인 ID (선택)",
+    "form.usernamePh": "예: customer01",
+    "form.passwordPolicy": "초기 로그인 정보는 ELLION에서 제공합니다. 첫 로그인 후 비밀번호를 변경할 수 있습니다. 신청서에 비밀번호를 적지 마세요.",
+    "done.payment": "<p style='margin-top:16px'><strong>결제 안내</strong><br>신청 승인 후 계좌이체 정보를 이메일로 안내해 드립니다. 이용료는 매월 선납이며, 입금 확인 후 서버가 제공됩니다.</p>",
+    "hero.currentTitle": "전용 GPU 서버.<br/><span style=\"color:#5dffb0\">AMD MI325X 사전예약.</span>",
+    "hero.currentLead": "AI 학습, 추론 및 기업 워크로드를 위한 전용 GPU·베어메탈 서버를 살펴보세요. AMD Instinct MI325X, MI300X 및 NVIDIA GPU 인프라의 가용성을 문의하거나 관심을 등록하세요.",
+    "hero.hardware": "전용 하드웨어",
+    "hero.servers": "GPU 및 CPU 서버",
+    "hero.root": "Root 권한",
+    "hero.pricing": "투명한 가격",
+
     "os.ownerConfirmed": "출처: 대표 제공 확인 정보 · 이번 작업의 서버 접속 검증 없음",
     "os.legacyUnverified": "출처: 기존 상품 사양 기록 · 실제 서버 OS 재확인 필요",
     "os.choice": "OS 변경 요청",
@@ -81,6 +96,21 @@ window.I18N = {
     "close": "닫기",
   },
   en: {
+    "network.title": "Network Performance",
+
+    "status.current": "Bare Metal Servers · Secure PayPal Payment Links Available After Request Confirmation · Contact:",
+    "price.label": "MONTHLY RENTAL",
+    "form.username": "Preferred Login ID (Optional)",
+    "form.usernamePh": "e.g. customer01",
+    "form.passwordPolicy": "Initial login credentials will be provided by ELLION. You can change your password after your first login. Never include passwords in your server request.",
+    "done.payment": "<p style='margin-top:16px'><strong>Payment Information</strong><br>Once your request is approved, we will email you a PayPal payment link. Monthly subscription options will be confirmed before payment.</p>",
+    "hero.currentTitle": "Dedicated GPU Servers.<br/><span style=\"color:#5dffb0\">AMD MI325X Reservations.</span>",
+    "hero.currentLead": "Explore dedicated GPU and bare metal servers for AI training, inference, and enterprise workloads. Request availability or register your interest in AMD Instinct MI325X, MI300X, and NVIDIA GPU infrastructure.",
+    "hero.hardware": "Dedicated Hardware",
+    "hero.servers": "GPU & CPU Servers",
+    "hero.root": "Root Access",
+    "hero.pricing": "Transparent Pricing",
+
     "os.ownerConfirmed": "Source: owner-confirmed information; no live server check in this update",
     "os.legacyUnverified": "Source: legacy product specification; live OS verification pending",
     "os.choice": "OS request",
