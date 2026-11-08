@@ -246,6 +246,8 @@ function setCurrency(c) {
 </div>
 
 
+${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-performance" data-network-product="${s.id}" aria-label="Network Performance">${window.NetworkSnapshot.html(s.networkSnapshot, lang)}</section>` : ""}
+
 <div class="plan-foot plan-foot-premium">
   <div class="plan-price-area">
     <span class="plan-price-label">MONTHLY RENTAL</span>

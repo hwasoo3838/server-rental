@@ -34,6 +34,7 @@ window.SERVERS = [
   {
   
     id: "elgrim-gfx-a4000",
+    networkSnapshot: { downloadMbps: 940.29, uploadMbps: 941.31, updatedAt: "2026-11-08 18:00" },
     accent: "gpu",
     catLabel: "GPU · Bare Metal",
     catLabelKo: "GPU · 베어메탈",

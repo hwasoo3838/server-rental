@@ -385,3 +385,16 @@ form.req { display: grid; gap: 14px; margin-top: 18px; }
   text-align: center;
   font-weight: 700;
 }
+
+/* GPU-008 owner-approved fixed network snapshot; other card metrics unchanged. */
+.network-snapshot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.network-snapshot-metric { min-width: 0; padding: 16px 10px; border: 1px solid var(--line-strong); border-radius: 12px; background: rgba(255,255,255,.025); }
+.network-snapshot-metric dt { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.network-snapshot-arrow { font-size: 25px; font-weight: 800; line-height: 1; }
+.network-snapshot-download .network-snapshot-arrow { color: #34d399; }
+.network-snapshot-upload .network-snapshot-arrow { color: #60a5fa; }
+.network-snapshot-metric dd { margin: 12px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px; }
+.network-snapshot-metric strong { font-size: clamp(24px, 2.6vw, 32px); font-weight: 800; line-height: 1.15; letter-spacing: -.035em; }
+.network-snapshot-metric dd span { color: var(--muted); font-size: 12px; }
+.network-snapshot-updated { margin: 12px 0 0; color: var(--muted); font-size: 12px; }
+@media (max-width: 380px) { .network-snapshot-grid { gap: 8px; } .network-snapshot-metric { padding: 14px 8px; } .network-snapshot-metric strong { font-size: 25px; } }
