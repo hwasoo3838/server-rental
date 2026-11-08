@@ -44,7 +44,7 @@ function boot(catalogue) {
     FormData: class {
       entries() {
         return [['type', get('#fType').value], ['serverId', get('#fServerId').value],
-          ['serverName', get('#fServerName').value], ['email', 'test@example.invalid']];
+          ['serverName', get('#fServerName').value], ['email', 'test@example.invalid'], ['username', get('#fUsername').value]];
       }
     }
   };
@@ -55,7 +55,8 @@ function boot(catalogue) {
   }
   return {
     context, get, posts, events,
-    open(id) { context.document.listeners.click({ preventDefault() {}, target: { closest: s => s === '[data-open]' ? { dataset: { open: 'request', server: id } } : null } }); }
+    open(id, type = 'request') { context.document.listeners.click({ preventDefault() {}, target: { closest: s => s === '[data-open]' ? { dataset: { open: type, server: id } } : null } }); },
+    language(lang) { get('#langSeg').listeners.click({ target: { closest: () => buttons.find(button => button.dataset.lang === lang) } }); }
   };
 }
 
@@ -80,16 +81,40 @@ test('new product renders approved details and handles missing, present and unav
   assert.match(card(offline), /class="status on-request"/);
 });
 
-test('request prepares a priced email without sending or claiming a conversion', async () => {
+test('request opens a priced email to the approved address without claiming delivery', async () => {
   const app = boot({ ok: true, servers: [], config: {} });
   await tick();
   app.open(id);
+  assert.equal(app.get('#fUsername').required, true);
+  assert.equal(app.get('#passwordPolicy').hidden, true);
+  assert.equal(app.get('#usernameLabel').textContent, 'Preferred Login ID (Required)');
+  app.get('#fUsername').value = 'customer01';
   app.get('#reqForm').listeners.submit({ preventDefault() {} });
-  assert.equal(app.get('#mailDraft').hidden, false);
-  assert.match(new URL(app.get('#draftLink').href).searchParams.get('body'), /Monthly Price: 299 USD/);
+  assert.equal(app.get('#mailDraft').hidden, true);
+  const mail = new URL(app.context.location.href);
+  assert.equal(mail.pathname, 'hwasoo3838@gmail.com');
+  assert.match(mail.searchParams.get('body'), /Monthly Price: 299 USD/);
+  assert.match(mail.searchParams.get('body'), /Preferred Login ID: customer01/);
+  assert.equal(app.get('#formHint').hidden, true);
   assert.notEqual(app.get('#done').style.display, 'block');
   assert.deepEqual(app.posts, []);
   assert.deepEqual(app.events, []);
-  app.get('#reqForm').listeners.input();
-  assert.equal(app.get('#mailDraft').hidden, true);
+  app.language('ko');
+  assert.equal(app.get('#usernameLabel').textContent, '희망 로그인 ID (필수)');
+  assert.equal(app.get('#submitBtn').textContent, '신청하기');
+});
+
+test('reservation keeps optional login and the existing manual draft', async () => {
+  const app = boot({ ok: true, servers: [], config: {} });
+  await tick();
+  app.open('elgrim-mi325x-8', 'reserve');
+  assert.equal(app.get('#fUsername').required, false);
+  assert.equal(app.get('#passwordPolicy').hidden, false);
+  assert.equal(app.get('#usernameLabel').textContent, 'Preferred Login ID (Optional)');
+  app.get('#reqForm').listeners.submit({ preventDefault() {} });
+  assert.equal(app.get('#mailDraft').hidden, false);
+  assert.match(new URL(app.get('#draftLink').href).searchParams.get('body'), /Reservation \(upcoming\)/);
+  assert.notEqual(new URL(app.get('#draftLink').href).pathname, 'hwasoo3838@gmail.com');
+  assert.notEqual(app.get('#done').style.display, 'block');
+  assert.deepEqual(app.posts, []);
 });

@@ -40,7 +40,7 @@ server-rental/
 
 **config** — `fx_usd_krw` 환율, `reply_within_ko/en` 회신 목표 시간, `contact_email`.
 
-- `contact_email`은 사이트 메일 표시와 신청 초안의 수신 주소에 사용됩니다.
+- `contact_email`은 사이트 메일 표시와 예약 초안의 수신 주소에 사용됩니다.
 - `notify_email` 및 FormSubmit 설정은 현재 수동 이메일 신청 흐름에서 사용되지 않습니다.
 - `servers.js` 의 `contactEmail` 과 `index.html` 의 주소는 시트를 못 읽을 때만 쓰는 폴백입니다.
 
@@ -61,12 +61,12 @@ POST {logEndpoint}   body: JSON(key 포함)              logs 에 한 줄 append
 
 | 버튼 | 대상 | 동작 |
 |---|---|---|
-| 사용 요청하기 / Request access | 상품 신청 | 메일 초안 준비 후 고객이 메일 앱에서 직접 발송 |
+| 사용 요청하기 / Request access | 상품 신청 | 로그인 ID 필수; 지정 Gmail 주소의 메일 앱을 열어 고객이 직접 발송 |
 | 예약하기 / Reserve | 예약 신청 | 메일 초안 준비 후 고객이 메일 앱에서 직접 발송 |
 
-- 초안은 발송이나 접수를 보장하지 않는다. 메일 앱이 없으면 표시된 내용을 복사해 이메일로 보낸다.
+- 초안은 발송이나 접수를 보장하지 않는다. 메일 앱이 없으면 사용 신청은 `hwasoo3838@gmail.com`으로 직접 문의하고 예약은 표시된 내용을 복사해 이메일로 보낸다.
 - 현재 신청은 자동으로 Sheets에 기록되지 않으며 메일 초안은 광고 전환으로 집계하지 않는다. 이전에 브라우저에 남은 미전송 로그도 삭제하거나 자동 재전송하지 않는다.
-- 수신 주소는 시트 `contact_email`, 읽지 못하면 `servers.js`의 `contactEmail`을 사용한다.
+- 예약 수신 주소는 시트 `contact_email`, 읽지 못하면 `servers.js`의 `contactEmail`을 사용한다. 사용 신청 수신 주소는 `hwasoo3838@gmail.com`이다.
 - 개인정보 보관·삭제 및 제3자 처리 방침을 확인하고 정식 안내를 마련한 후 오픈해야 한다.
 
 ## 언어 / 통화

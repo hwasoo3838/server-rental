@@ -352,6 +352,17 @@ ${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-perform
   function renderModal() {
     const { server, type } = current;
     const isReserve = type === "reserve";
+    $("#fUsername").required = !isReserve;
+    $("#usernameLabel").textContent = t(isReserve ? "form.username" : "form.usernameRequired");
+    $("#passwordPolicy").hidden = !isReserve;
+    if (isReserve) {
+      $("#formHint").hidden = false;
+      $("#formHint").innerHTML = t("form.hint");
+      $$("#formHint [data-mail-text]").forEach((el) => (el.textContent = contactEmail()));
+    } else {
+      $("#formHint").hidden = true;
+      $("#formHint").textContent = "";
+    }
     $("#modalLabel").textContent = t(isReserve ? "modal.reserve.label" : "modal.request.label");
     $("#modalTitle").textContent = t(isReserve ? "modal.reserve.title" : "modal.request.title");
    
@@ -508,8 +519,14 @@ Email: p.email,
       return;
     }
 
-    current.draft = buildPayload();
-    renderDraft(current.draft);
+    const payload = buildPayload();
+    if (current.type === "reserve") {
+      current.draft = payload;
+      renderDraft(payload);
+    } else {
+      const subject = mailSubject(payload), body = mailBody(payload);
+      location.href = `mailto:hwasoo3838@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
   });
 
   /* ---------- 토스트 ---------- */

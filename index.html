@@ -287,7 +287,7 @@
 <p class="hint" id="linuxPolicy" data-i18n="os.policy">Linux only. Windows and Windows Server are not offered. OS changes are requests only; no automatic reinstall is performed.</p>
 
 <div class="field">
-  <label for="fUsername" data-i18n="form.username">
+  <label for="fUsername" id="usernameLabel">
     Preferred Login ID (Optional)
   </label>
   <input
@@ -295,7 +295,7 @@
     id="fUsername"
     name="username"
     maxlength="32"
-    pattern="[a-z_][a-z0-9_-]*"
+    pattern="[a-z_][a-z0-9_\-]*"
     placeholder="e.g. customer01" data-i18n-attr="placeholder:form.usernamePh"
   />
 </div>
@@ -336,7 +336,7 @@
         </label>
         <div class="err" id="formErr"></div>
         <div class="form-foot">
-          <span class="hint" data-i18n-html="form.hint"></span>
+          <span class="hint" id="formHint"></span>
           <button type="submit" class="btn btn-accent" id="submitBtn"></button>
         </div>
         <div id="mailDraft" hidden>
@@ -364,8 +364,8 @@
 
   <script src="assets/servers.js?v=20261108-xeon-6426y"></script>
   <script src="assets/analytics.js?v=20261108-mail-draft"></script>
-  <script src="assets/i18n.js?v=20261108-mail-draft"></script>
+  <script src="assets/i18n.js?v=20261108-request-manual"></script>
   <script src="assets/network-snapshot.js?v=20261108-xeon-6426y"></script>
-  <script src="assets/app.js?v=20261108-xeon-6426y"></script>
+  <script src="assets/app.js?v=20261108-request-manual"></script>
 </body>
 </html>
