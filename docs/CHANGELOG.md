@@ -27,6 +27,11 @@
 
 ---
 
+### 변경 #10: A4000 OS 표시 변경
+- elgrim-gfx-a4000 OS 표시를 Ubuntu 20.04.6 LTS에서 24.04 LTS로 변경(assets/app.js, 대표 지시)
+
+---
+
 ### 변경 #9: 검색·공유 미리보기 설정
 - assets/og-image.png(1200x630) 추가, index.html에 og:image/og:url/og:site_name, twitter:card, 조직 logo 추가
 

@@ -20,7 +20,7 @@
   "elgrim-gfx-a4000": {
     "name": "Ubuntu Server",
     "displayName": "Ubuntu",
-    "version": "20.04.6 LTS",
+    "version": "24.04 LTS",
     "kernel": null,
     "source": "Owner-provided confirmed OS information",
     "verification": "OWNER_CONFIRMED",
