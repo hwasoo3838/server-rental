@@ -32,7 +32,7 @@ function catalogue(directory){const sandbox={window:{}};vm.runInNewContext(fs.re
   for(const lang of ['en','ko']){
    await page.setViewportSize({width:1280,height:900});await page.goto(url+'?lang='+lang);await page.waitForSelector('.plan');
    const card=page.locator('[data-id="elgrim-gfx-a4000"]'),panel=card.locator('.network-performance');
-   const text=await panel.innerText();assert.match(text,/940\.29/);assert.match(text,/941\.31/);assert.match(text,/Last Updated: 2026-11-08 18:00/);
+   const text=await panel.innerText();assert.match(text,/940\.29/);assert.match(text,/941\.31/);assert.match(text,/Last Updated: 2026-11-10 23:00/);
    assert.doesNotMatch(text,/MB\/s|Ping|패킷 손실|packet loss|iperf|speedtest|https?:/i);
    assert.equal(await panel.locator('.network-snapshot-metric').count(),2);
    assert.equal(await panel.locator('.network-snapshot-download .network-snapshot-arrow').evaluate(e=>getComputedStyle(e).color),'rgb(52, 211, 153)');
@@ -49,7 +49,7 @@ function catalogue(directory){const sandbox={window:{}};vm.runInNewContext(fs.re
   await page.goto(url+'?lang=en');await page.waitForSelector('.plan');
   for(const [id,down,up] of [['ellion-xeon-gold-6154-dual','943.79','941.24'],['ellion-web-db-6140','942.29','941.28']]){
    const panel=page.locator('[data-id="'+id+'"] .network-performance');const text=await panel.innerText();
-   assert.ok(text.includes(down));assert.ok(text.includes(up));assert.match(text,/Last Updated: 2026-11-08 18:00/);assert.doesNotMatch(text,/Ping|MB\/s|packet loss|speedtest|https?:/i);
+   assert.ok(text.includes(down));assert.ok(text.includes(up));assert.match(text,/Last Updated: 2026-11-10 23:00/);assert.doesNotMatch(text,/Ping|MB\/s|packet loss|speedtest|https?:/i);
    assert.equal(await panel.locator('.network-snapshot-metric').count(),2);
    await panel.screenshot({path:'/tmp/ellion-network-'+id+'-preview.png'});
   }

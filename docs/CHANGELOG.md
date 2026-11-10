@@ -22,6 +22,16 @@
 
 ---
 
+### 변경 #8: 네트워크 Last Updated 갱신
+- A4000·듀얼 Xeon·18코어 3개 상품의 Last Updated를 2026-11-10 23:00으로 변경(assets/servers.js, tests/browser-network-snapshot.test.js). 속도 값은 변경 없음, 6426Y는 기존대로 표시 없음
+
+---
+
+### 변경 #9: 검색·공유 미리보기 설정
+- assets/og-image.png(1200x630) 추가, index.html에 og:image/og:url/og:site_name, twitter:card, 조직 logo 추가
+
+---
+
 ### 변경 #7: 해외 사이트 영어 전용 전환 (미배포)
 - 한국어 선택 버튼 제거, `?lang=ko`/저장된 한국어 설정 무시, 영어·USD 고정 (assets/app.js, index.html)
 - 상단 안내 띠(Bare Metal Servers · PayPal… · Contact) 제거 (결제 안내는 How it works/FAQ에 유지)

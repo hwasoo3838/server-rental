@@ -34,7 +34,7 @@ window.SERVERS = [
   {
   
     id: "elgrim-gfx-a4000",
-    networkSnapshot: { downloadMbps: 940.29, uploadMbps: 941.31, updatedAt: "2026-11-08 18:00" },
+    networkSnapshot: { downloadMbps: 940.29, uploadMbps: 941.31, updatedAt: "2026-11-10 23:00" },
     accent: "gpu",
     catLabel: "GPU · Bare Metal",
     catLabelKo: "GPU · 베어메탈",
@@ -65,7 +65,7 @@ window.SERVERS = [
   },
   {
     id: "ellion-xeon-gold-6154-dual",
-    networkSnapshot: { downloadMbps: 943.79, uploadMbps: 941.24, updatedAt: "2026-11-08 18:00" },
+    networkSnapshot: { downloadMbps: 943.79, uploadMbps: 941.24, updatedAt: "2026-11-10 23:00" },
     accent: "ai",
     catLabel: "CPU · Bare Metal",
     catLabelKo: "CPU · 베어메탈",
@@ -97,7 +97,7 @@ window.SERVERS = [
 
   {
     id: "ellion-web-db-6140",
-    networkSnapshot: { downloadMbps: 942.29, uploadMbps: 941.28, updatedAt: "2026-11-08 18:00" },
+    networkSnapshot: { downloadMbps: 942.29, uploadMbps: 941.28, updatedAt: "2026-11-10 23:00" },
     accent: "ai",
     catLabel: "CPU · Bare Metal",
     catLabelKo: "CPU · 베어메탈",
