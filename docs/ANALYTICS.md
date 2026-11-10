@@ -2,7 +2,7 @@
 
 | 항목 | 값 |
 | --- | --- |
-| GA 계정 | Ellion (hwasoo3838@gmail.com) |
+| GA 계정 | Ellion (사이트 소유자 구글 계정) |
 | GA4 속성 | elliongpu.com (속성 ID `556804121`) |
 | 웹 데이터 스트림 | https://elliongpu.com |
 | 측정 ID | `G-0S428L9EKF` |

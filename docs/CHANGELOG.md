@@ -22,6 +22,16 @@
 
 ---
 
+### 변경 #7: 해외 사이트 영어 전용 전환 (미배포)
+- 한국어 선택 버튼 제거, `?lang=ko`/저장된 한국어 설정 무시, 영어·USD 고정 (assets/app.js, index.html)
+- 상단 안내 띠(Bare Metal Servers · PayPal… · Contact) 제거 (결제 안내는 How it works/FAQ에 유지)
+- 연락처 메일을 help@elliongpu.com으로 통일, 기존 개인 메일 주소 제거(사용 신청 mailto 포함)
+- 영어 privacy.html 추가(푸터·신청 동의·FAQ 링크), 쿠키 고지 배너 추가(미국·아시아 기준, 동의 차단 없음)
+- 정적 메타 설명을 영어로 변경, tests/product-mail.test.js 갱신
+- 테스트: npm test 통과(29 + 3)
+
+---
+
 ### 변경 #6: 개발 관리 시스템 및 동기화 프레임워크 구축
 
 **날짜**: 2026-11-07  

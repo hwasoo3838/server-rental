@@ -78,7 +78,8 @@ function savedLanguage() {
   try { return localStorage.getItem(LS.lang); } catch (_) { return null; }
 }
 const validLanguage = (value) => value === "ko" || value === "en";
-let lang = validLanguage(q.get("lang")) ? q.get("lang") : validLanguage(savedLanguage()) ? savedLanguage() : "en";
+// The overseas site is English-only; ?lang= and saved Korean preferences are ignored.
+let lang = "en";
 let currency = lang === "ko" ? "KRW" : "USD";
 function saveLanguage() {
   try {
@@ -143,7 +144,7 @@ saveLanguage();
   }
 
 function setLang(l) {
-  if (!validLanguage(l)) return;
+  if (l !== "en") return;
   lang = l;
   currency = lang === "ko" ? "KRW" : "USD";
   saveLanguage();
@@ -154,10 +155,6 @@ function setLang(l) {
   applyI18n();
   render();
 }
-$("#langSeg").addEventListener("click", (e) => {
-  const button = e.target.closest("button[data-lang]");
-  if (button) setLang(button.dataset.lang);
-});
 
   $("#year").textContent = new Date().getFullYear();
 
@@ -525,7 +522,7 @@ Email: p.email,
       renderDraft(payload);
     } else {
       const subject = mailSubject(payload), body = mailBody(payload);
-      location.href = `mailto:hwasoo3838@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      location.href = `mailto:${contactEmail()}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
   });
 
@@ -541,8 +538,24 @@ Email: p.email,
   }, { rootMargin: "-40% 0px -55% 0px" });
   secs.forEach((s) => io.observe(s));
 
+  /* ---------- 쿠키 고지 (미국·아시아 기준: 고지 후 확인) ---------- */
+  function initCookieNotice() {
+    try { if (localStorage.getItem("elgrim.cookieNotice")) return; } catch (_) { /* storage blocked: show every visit */ }
+    const bar = document.createElement("div");
+    bar.className = "cookie-notice";
+    bar.setAttribute("role", "region");
+    bar.setAttribute("aria-label", "Cookie notice");
+    bar.innerHTML = 'We use cookies for analytics and advertising measurement. See our <a href="privacy.html">Privacy Policy</a>. <button type="button" class="btn btn-sm btn-accent">OK</button>';
+    bar.querySelector("button").addEventListener("click", () => {
+      try { localStorage.setItem("elgrim.cookieNotice", "1"); } catch (_) { /* ignore */ }
+      bar.remove();
+    });
+    document.body.appendChild(bar);
+  }
+
   /* ---------- 시작 ---------- */
   applyI18n();
   render();
+  initCookieNotice();
   loadLive(false).then(() => { applyI18n(); render(); });
 })();

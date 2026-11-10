@@ -36,7 +36,9 @@ function boot(catalogue) {
     gtag: (...args) => events.push(args),
     IntersectionObserver: class { observe() {} },
     document: {
-      documentElement: {}, body: { style: {} }, referrer: '',
+      documentElement: {}, referrer: '',
+      body: { style: {}, appendChild(node) { (context.notices = context.notices || []).push(node); } },
+      createElement: () => ({ ...element(), setAttribute() {}, querySelector: () => element() }),
       querySelector: get, querySelectorAll: s => s === '#langSeg button' ? buttons : [],
       getElementById: () => null, listeners: {},
       addEventListener(event, fn) { this.listeners[event] = fn; }
@@ -92,16 +94,15 @@ test('request opens a priced email to the approved address without claiming deli
   app.get('#reqForm').listeners.submit({ preventDefault() {} });
   assert.equal(app.get('#mailDraft').hidden, true);
   const mail = new URL(app.context.location.href);
-  assert.equal(mail.pathname, 'hwasoo3838@gmail.com');
+  assert.equal(mail.pathname, 'help@elliongpu.com');
   assert.match(mail.searchParams.get('body'), /Monthly Price: 299 USD/);
   assert.match(mail.searchParams.get('body'), /Preferred Login ID: customer01/);
   assert.equal(app.get('#formHint').hidden, true);
   assert.notEqual(app.get('#done').style.display, 'block');
   assert.deepEqual(app.posts, []);
   assert.deepEqual(app.events, []);
-  app.language('ko');
-  assert.equal(app.get('#usernameLabel').textContent, '희망 로그인 ID (필수)');
-  assert.equal(app.get('#submitBtn').textContent, '신청하기');
+  assert.equal(app.get('#usernameLabel').textContent, 'Preferred Login ID (Required)');
+  assert.equal(app.get('#submitBtn').textContent, 'Submit request');
 });
 
 test('reservation keeps optional login and the existing manual draft', async () => {
@@ -114,7 +115,23 @@ test('reservation keeps optional login and the existing manual draft', async () 
   app.get('#reqForm').listeners.submit({ preventDefault() {} });
   assert.equal(app.get('#mailDraft').hidden, false);
   assert.match(new URL(app.get('#draftLink').href).searchParams.get('body'), /Reservation \(upcoming\)/);
-  assert.notEqual(new URL(app.get('#draftLink').href).pathname, 'hwasoo3838@gmail.com');
+  assert.equal(new URL(app.get('#draftLink').href).pathname, 'help@elliongpu.com');
   assert.notEqual(app.get('#done').style.display, 'block');
   assert.deepEqual(app.posts, []);
+});
+
+test('overseas site is English-only with unified contact email and privacy links', () => {
+  const root = path.join(__dirname, '..');
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  assert.doesNotMatch(html, /data-lang="ko"|langSeg|class="statusbar"/);
+  assert.match(html, /href="privacy\.html"/);
+  assert.match(fs.readFileSync(path.join(root, 'privacy.html'), 'utf8'), /help@elliongpu\.com/);
+  for (const f of ['index.html', 'privacy.html', 'assets/app.js', 'assets/servers.js', 'assets/i18n.js'])
+    assert.doesNotMatch(fs.readFileSync(path.join(root, f), 'utf8'), /gmail\.com/);
+});
+
+test('cookie notice is shown once for first-time visitors', async () => {
+  const app = boot({ ok: true, servers: [], config: {} });
+  await tick();
+  assert.equal(app.context.notices.length, 1);
 });

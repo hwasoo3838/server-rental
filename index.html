@@ -13,7 +13,7 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="meta.title">Dedicated GPU & Bare Metal Server Rental | ELLION</title>  <meta name="description" data-i18n-attr="content:meta.desc" content="엘리온 베어메탈 GPU 서버 임대. RTX A4000, RTX 4090, L40S / RTX 6000 Ada, MI325X 8장 서버를 메일로 신청받습니다." />
+  <title data-i18n="meta.title">Dedicated GPU & Bare Metal Server Rental | ELLION</title>  <meta name="description" data-i18n-attr="content:meta.desc" content="Explore AMD Instinct MI325X, MI300X and NVIDIA GPU servers. Submit a reservation request for AI training, inference and bare metal infrastructure. ELLION." />
   <meta property="og:title" content="Ellion Bare Metal | GPU dedicated servers" />
   <meta property="og:description" content="Bare-metal GPU server rental: RTX A4000, RTX 4090, L40S / RTX 6000 Ada and an 8× MI325X node." />
   <meta property="og:type" content="website" />
@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
-  <link rel="stylesheet" href="assets/style.css?v=20261108-language-products" />
+  <link rel="stylesheet" href="assets/style.css?v=20261110-privacy" />
 
 <script type="application/ld+json">
 {
@@ -47,15 +47,6 @@
 <body>
 
 
-<div class="statusbar">
-  <span data-i18n="status.current">
-    Bare Metal Servers ·
-    PayPal or bank transfer arranged after request confirmation ·
-    Contact:
-  </span>
-  <a href="mailto:help@elliongpu.com">help@elliongpu.com</a>
-</div>
-
 
   <header class="site">
     <div class="wrap">
@@ -68,10 +59,6 @@
         <a href="#faq" data-i18n="nav.faq">FAQ</a>
       </nav>
       <div class="hdr-right">
-        <div class="seg seg-sm" id="langSeg" role="group" aria-label="한국어 / English">
-          <button type="button" data-lang="ko" lang="ko" aria-pressed="false">한국어</button>
-          <button type="button" data-lang="en" lang="en" aria-pressed="true">English</button>
-        </div>
   <button class="btn btn-sm menu-btn" id="menuBtn" aria-label="Menu">☰</button>
 </div>
     </div>
@@ -229,7 +216,7 @@
   <footer class="site">
     <div class="wrap">
       <div>© <span id="year"></span> Ellion · <span data-i18n="footer.tag">베어메탈 GPU 서버 임대</span></div>
-      <div><a href="mailto:help@elliongpu.com" data-mail data-mail-text>help@elliongpu.com</a> · <a href="#faq" data-i18n="footer.privacy">개인정보 처리 안내</a></div>
+      <div><a href="mailto:help@elliongpu.com" data-mail data-mail-text>help@elliongpu.com</a> · <a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a></div>
     </div>
   </footer>
 
@@ -332,7 +319,7 @@
        
         <label class="consent">
           <input type="checkbox" id="fConsent" required />
-          <span data-i18n="form.consent"></span>
+          <span data-i18n-html="form.consent"></span>
         </label>
         <div class="err" id="formErr"></div>
         <div class="form-foot">
