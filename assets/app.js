@@ -207,12 +207,12 @@ function setLang(l) {
   }
   // Use approved product prices consistently in cards, modal and payload.
   // USD prices are maintained independently; do not infer them from KRW prices.
-  function quote(s) {
+  function quote(s, quoteCurrency = currency) {
     const base = BASE.find(item => item.id === s.id) || s;
-    if (s.id === "ellion-xeon-gold-6154-dual") return { amount: positivePrice(currency === "USD" ? base.priceUsd : base.priceKrw), approx: false };
+    if (s.id === "ellion-xeon-gold-6154-dual") return { amount: positivePrice(quoteCurrency === "USD" ? base.priceUsd : base.priceKrw), approx: false };
     const usd = base.fixedUsdPrice ? positivePrice(base.priceUsd) : positivePrice(s.priceUsd) ?? positivePrice(base.priceUsd);
     const krw = positivePrice(s.priceKrw) ?? positivePrice(base.priceKrw);
-    if (currency === "USD") return { amount: usd, approx: false };
+    if (quoteCurrency === "USD") return { amount: usd, approx: false };
     return { amount: krw, approx: false };
   }
   function priceHtml(s) {
@@ -349,6 +349,7 @@ ${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-perform
   function renderModal() {
     const { server, type } = current;
     const isReserve = type === "reserve";
+    renderBackupBilling();
     $("#fUsername").required = !isReserve;
     $("#usernameLabel").textContent = t(isReserve ? "form.username" : "form.usernameRequired");
     $("#passwordPolicy").hidden = !isReserve;
@@ -392,6 +393,7 @@ $("#modalServer").innerHTML = `
   function openModal(type, serverId) {
     const server = SERVERS.find((s) => s.id === serverId) || SERVERS[0];
     current = { server, type };
+    $("#fBackupPlan").value = "none";
     const isReserve = type === "reserve";
     renderModal();
 
@@ -424,11 +426,34 @@ $("#modalServer").innerHTML = `
   document.addEventListener("keydown", (e) => e.key === "Escape" && closeModal());
 
   /* ---------- 전송 ---------- */
+  function backupBilling() {
+    const planId = current.type === 'reserve' ? 'none' : $("#fBackupPlan").value || 'none';
+    const billingCurrency = planId === 'none' ? currency : 'USD';
+    return BackupPricing.calculate(quote(current.server, billingCurrency).amount, billingCurrency, planId);
+  }
+  function renderBackupBilling() {
+    const reserve = current.type === 'reserve';
+    $("#backupOptionField").hidden = reserve;
+    $("#backupOptionField").style.display = reserve ? 'none' : '';
+    $("#fBackupPlan").disabled = reserve;
+    if (reserve) return;
+    const ko = lang === 'ko';
+    $("#backupOptionLabel").textContent = ko ? '백업 서비스 (선택)' : 'Optional backup service';
+    $("#fBackupPlan").options && ($("#fBackupPlan").options[0].textContent = ko ? '선택 안 함' : 'No backup');
+    const billing = backupBilling(), fmt = amount => BackupPricing.format(amount, billing.currency);
+    $("#backupBillingSummary").textContent = (ko ? '서버 월 요금: ' : 'Server / month: ') + fmt(billing.serverAmount) +
+      ' · ' + (ko ? '백업 월 요금: ' : 'Backup / month: ') + fmt(billing.backupAmount) +
+      ' · ' + (ko ? '월 합계: ' : 'Monthly total: ') + fmt(billing.totalAmount);
+    $("#backupBillingNote").textContent = ko ? '백업 선택 시 USD로 합산 청구합니다. 용량·세금·서비스 조건 확인 후 서버와 백업을 한 월 청구서에 합산합니다. 신청만으로 결제되거나 백업이 활성화되지 않습니다.' : 'Backup selections are billed in USD. Server and backup are combined on one monthly invoice after capacity, taxes and service terms are confirmed. Submitting does not charge you or activate backup.';
+    $("#backupPolicyLink").textContent = ko ? '백업 정책 및 용량 기준 ↗' : 'Backup policy & storage limits ↗';
+  }
+  $("#fBackupPlan").addEventListener('change', () => { if (current) renderBackupBilling(); });
   function buildPayload() {
     current.server = SERVERS.find(s => s.id === current.server.id) || current.server;
     const p = Object.fromEntries(new FormData(form).entries());
     const request = osRequest();
     const installed = currentOs(current.server);
+    const billing = backupBilling();
     const requestSummary = request.osChangeRequested ? "OS change requested: " + request.os + "; version: " + request.osVersion : "Keep current OS; no OS change requested";
     return {
       ...p,
@@ -443,10 +468,13 @@ $("#modalServer").innerHTML = `
      gpuCount: current.showGpu ? p.gpuCount : "",
 
      lang,
-     currency,
+     currency: billing.currency,
 
 
-monthlyPrice: quote(current.server).amount === null ? "Price confirmation required" : quote(current.server).amount.toLocaleString("en-US", { maximumFractionDigits: 0 }) + " " + currency + (quote(current.server).approx ? " (indicative conversion)" : ""),
+monthlyPrice: BackupPricing.format(billing.totalAmount, billing.currency),
+serverMonthlyPrice: BackupPricing.format(billing.serverAmount, billing.currency),
+backupPlan: billing.planId,
+backupMonthlyPrice: BackupPricing.format(billing.backupAmount, billing.currency),
 regularPrice: "",
 priceCondition: "Standard monthly rate",
 
@@ -470,6 +498,11 @@ vat: "Excluded",
     Type: isR(p) ? "Reservation (upcoming)" : "Access request",
 Server: `${p.serverName} (${p.serverId})`,
 "Monthly Price": p.monthlyPrice,
+"Server Monthly Price": p.serverMonthlyPrice,
+"Backup Plan": p.backupPlan,
+"Backup Monthly Price": p.backupMonthlyPrice,
+"Combined Monthly Price": p.monthlyPrice,
+"Billing Status": "Monthly invoice after capacity, taxes and terms confirmation; not charged",
 "Regular Price": p.regularPrice,
 "Price Condition": p.priceCondition,
 "VAT": p.vat,

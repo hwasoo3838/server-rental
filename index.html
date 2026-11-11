@@ -64,6 +64,7 @@
       <nav class="main" id="nav">
         <a href="#top" class="active" data-i18n="nav.home">홈</a>
         <a href="#plans" data-i18n="nav.servers">서버</a>
+        <a href="backup.html">Linux Backup</a>
         <a href="#how" data-i18n="nav.how">이용 방법</a>
         <a href="#included" data-i18n="nav.included">기본 제공</a>
         <a href="#faq" data-i18n="nav.faq">FAQ</a>
@@ -283,6 +284,19 @@
 </div>
 <p class="hint" id="linuxPolicy" data-i18n="os.policy">Linux only. Windows and Windows Server are not offered. OS changes are requests only; no automatic reinstall is performed.</p>
 
+<div class="field" id="backupOptionField">
+  <label for="fBackupPlan" id="backupOptionLabel">Optional backup service</label>
+  <select id="fBackupPlan" name="backupPlan">
+    <option value="none">No backup</option>
+    <option value="starter">Starter · 100 GB · +$9/month</option>
+    <option value="standard">Standard · 500 GB · +$25/month</option>
+    <option value="business">Business · 1 TB · +$45/month</option>
+  </select>
+  <div class="hint" id="backupBillingSummary" aria-live="polite" aria-atomic="true" style="border:1px solid var(--line);border-radius:12px;padding:14px;overflow-wrap:anywhere"></div>
+  <p class="hint" id="backupBillingNote"></p>
+  <a class="hint" href="backup.html" target="_blank" rel="noopener" id="backupPolicyLink">Backup details ↗</a>
+</div>
+
 <div class="field">
   <label for="fUsername" id="usernameLabel">
     Preferred Login ID (Optional)
@@ -363,6 +377,7 @@
   <script src="assets/analytics.js?v=20261108-mail-draft"></script>
   <script src="assets/i18n.js?v=20261108-request-manual"></script>
   <script src="assets/network-snapshot.js?v=20261108-xeon-6426y"></script>
-  <script src="assets/app.js?v=20261108-request-manual"></script>
+  <script src="assets/backup-pricing.js?v=20261112-addon"></script>
+  <script src="assets/app.js?v=20261112-backup-addon"></script>
 </body>
 </html>

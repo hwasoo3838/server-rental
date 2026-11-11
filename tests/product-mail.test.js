@@ -52,7 +52,7 @@ function boot(catalogue) {
   };
   context.window = context;
   vm.createContext(context);
-  for (const file of ['servers.js', 'i18n.js', 'network-snapshot.js', 'app.js']) {
+  for (const file of ['servers.js', 'i18n.js', 'network-snapshot.js', 'backup-pricing.js', 'app.js']) {
     vm.runInContext(fs.readFileSync(path.join(__dirname, '../assets', file), 'utf8'), context);
   }
   return {
@@ -134,4 +134,22 @@ test('cookie notice is shown once for first-time visitors', async () => {
   const app = boot({ ok: true, servers: [], config: {} });
   await tick();
   assert.equal(app.context.notices.length, 1);
+});
+
+// BACKUP-001: real manual-email application flow, with no external sends.
+test('backup add-on combines server and backup on the monthly invoice request', () => {
+  const app=boot(null);
+  app.open('ellion-xeon-gold-6154-dual');
+  assert.equal(app.get('#fBackupPlan').value,'none');
+  app.get('#fBackupPlan').value='standard';
+  app.get('#fBackupPlan').listeners.change();
+  assert.match(app.get('#backupBillingSummary').textContent,/Monthly total: 200 USD/);
+  app.get('#reqForm').listeners.submit({preventDefault(){}});
+  const body=new URL(app.context.location.href).searchParams.get('body');
+  assert.match(body,/Server Monthly Price: 175 USD/);
+  assert.match(body,/Backup Monthly Price: 25 USD/);
+  assert.match(body,/Combined Monthly Price: 200 USD/);
+  assert.equal(app.posts.length,0);
+  app.open('elgrim-gfx-a4000');
+  assert.equal(app.get('#fBackupPlan').value,'none');
 });

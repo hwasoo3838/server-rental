@@ -20,6 +20,18 @@
 
 ## 최근 변경 이력 (역순)
 
+### BACKUP-001/GPU-006: Linux 백업 가격 페이지 및 최초 신청 합산 요금
+
+- 2026-11-12 (한국 시간), 사용자 배포 승인. 원격 main a53c4c7 기준으로 이번 변경만 반영.
+- 변경 전 로컬 전체/원격 소스·기존 미리보기 복원 사본과 SHA-256 보존. 서버 상품/가격/사양/영문 UI·수동 이메일 신청은 유지.
+- backup.html, assets/backup.css: 100 GB $9/500 GB $25/1 TB $45와 용량/정책·이메일 문의. index.html 메뉴·신청 옵션, sitemap.xml 경로 추가.
+- assets/backup-pricing.js, assets/app.js: 선택 시 USD 서버 요금+백업 합계, 구성별 월 청구 내역. 기본 없음·미확정 서버 합계 문의·예약 제외·상품 변경 초기화. 자동 결제/API 전환 없이 기존 수동 이메일로 전달.
+- tests/product-mail.test.js, tests/backup-billing.test.js, package.json: 기존 회귀와 합산 검증 연결. REQUIREMENTS.md 업데이트.
+- 배포 전 Chromium: 가격/문의/FAQ·320/375/768/1440px 및 실제 신청에서 합산·메일 구성·초기화·예약 제외 통과(외부 요청/메일 발송 차단).
+- 배포 사본 npm test: 기존 검사 29개 + Node 8개 = 37개 통과·기존 1개 스킵. 로컬 전체 80개 통과·기존 1개 스킵.
+- 실제 저장 용량/백업 운영 설정, 미배포 신청 API와 다른 로컬 작업은 배포 범위에서 제외.
+
+
 ---
 
 ### 변경 #8: 네트워크 Last Updated 갱신
