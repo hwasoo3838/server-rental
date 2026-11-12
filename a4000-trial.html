@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NVIDIA RTX A4000 · Free 10-hour Trial Application | ELLION</title>
+  <meta name="description" content="Apply for a free 10-hour NVIDIA RTX A4000 GPU trial. Tell ELLION about your workload. Access is subject to eligibility, capacity and operator approval." />
+  <meta property="og:title" content="Apply for a Free 10-hour NVIDIA RTX A4000 Trial | ELLION" />
+  <meta property="og:description" content="A dedicated application for your first GPU trial. Email confirmation and operator approval are required before access is arranged." />
+  <meta property="og:type" content="website" />
+  <link rel="canonical" href="https://elliongpu.com/a4000-trial.html" />
+  <link rel="stylesheet" href="assets/style.css?v=20261110-privacy" />
+  <link rel="stylesheet" href="assets/a4000-trial.css?v=20261112" />
+  <script defer src="assets/a4000-trial.js?v=20261112"></script>
+</head>
+<body class="trial-application-page">
+  <a class="trial-skip" href="#trial-main">Skip to content</a>
+  <header class="trial-header"><div class="wrap"><a class="logo" href="index.html"><span class="logo-mark">E</span>Ellion</a><nav aria-label="Main navigation"><a href="index.html#plans">GPU &amp; Bare Metal</a><a href="backup.html">Linux Backup</a><a href="#trial-form">Apply for a trial</a></nav></div></header>
+  <main id="trial-main" class="wrap trial-main">
+    <div class="trial-eyebrow">NVIDIA RTX A4000 / FREE GPU TRIAL</div>
+    <h1>Test your workload.<br /><span>10 hours, on us.</span></h1>
+    <p class="trial-intro">Apply to evaluate your workload on an NVIDIA RTX A4000 with 16 GB GPU memory. Tell us what you want to test, and ELLION will review your request.</p>
+    <p class="trial-availability">By application · Subject to eligibility, capacity and operator approval. Submitting does not create an account, activate GPU access or start the trial timer.</p>
+    <ol class="trial-steps" aria-label="Application steps"><li><span>01</span><strong>Send your application</strong><p>Complete the form and send the prepared email.</p></li><li><span>02</span><strong>Confirm &amp; prepare</strong><p>ELLION confirms your email, eligibility and access arrangements.</p></li><li><span>03</span><strong>Start your test</strong><p>After approval and setup, the continuous 10-hour period begins with your first authenticated connection.</p></li></ol>
+    <div class="trial-layout">
+      <section class="trial-form-panel" aria-labelledby="application-title">
+        <h2 id="application-title">Your trial application</h2><p class="trial-muted">This is a free trial request, separate from a paid server rental. No payment is taken.</p>
+        <form id="trial-form">
+          <div class="field"><label for="trialEmail">Email <span aria-hidden="true">*</span></label><input id="trialEmail" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com" /></div>
+          <div class="field"><label for="trialName">Name / organisation <span class="trial-muted">(optional)</span></label><input id="trialName" name="name" autocomplete="organization" maxlength="120" /></div>
+          <div class="field"><label for="trialPurpose">What would you like to test? <span aria-hidden="true">*</span></label><select id="trialPurpose" name="purpose" required><option value="">Select a workload</option><option>AI inference</option><option>AI training / fine-tuning</option><option>Rendering / graphics</option><option>CUDA development</option><option>Other Linux GPU workload</option></select></div>
+          <div class="field"><label for="trialDetails">Workload details <span aria-hidden="true">*</span></label><textarea id="trialDetails" name="details" rows="4" minlength="10" maxlength="1500" required placeholder="Framework, model size, software requirements and what you want to evaluate"></textarea></div>
+          <div class="field"><label for="trialSchedule">Preferred test date / timezone <span class="trial-muted">(optional)</span></label><input id="trialSchedule" name="schedule" maxlength="120" placeholder="For example: 20 November, UTC+1" /></div>
+          <label class="trial-consent"><input id="trialConsent" type="checkbox" required /><span>I have read the <a href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a> and the trial conditions below. I understand this is an application, subject to confirmation.</span></label>
+          <p class="trial-muted">Do not include passwords, private keys, confidential customer data or payment details.</p>
+          <p id="trialError" role="alert"></p>
+          <button class="btn btn-accent" type="submit">Review my trial application <span aria-hidden="true">↗</span></button>
+        </form>
+        <section id="trial-review" class="trial-review" hidden aria-labelledby="review-title">
+          <h3 id="review-title" tabindex="-1">Email draft ready — not yet sent</h3>
+          <p>Open your email app and send this application to <strong>help@elliongpu.com</strong>. Preparing this draft does not send or register your request.</p>
+          <div class="trial-review-actions"><a id="trialMailLink" class="btn btn-accent" href="mailto:help@elliongpu.com">Open email app to send</a><button id="trialCopy" class="btn" type="button">Copy application</button></div>
+          <label for="trialDraft">Application details</label><textarea id="trialDraft" rows="12" readonly></textarea><p id="trialCopyStatus" class="trial-muted" role="status"></p>
+          <p class="trial-muted">If your email app does not open, copy the details and send them yourself. Wait for ELLION's reply before making access or scheduling assumptions.</p>
+        </section>
+      </section>
+      <aside class="trial-conditions" aria-labelledby="trial-conditions-title"><span class="trial-eyebrow">BEFORE YOU APPLY</span><h2 id="trial-conditions-title">A focused first test.</h2><dl><dt>GPU</dt><dd>NVIDIA RTX A4000 · 16 GB</dd><dt>Environment</dt><dd>Linux workloads</dd><dt>Duration</dt><dd>10 continuous hours after the first authenticated connection, once approved and prepared</dd><dt>Eligibility</dt><dd>One trial per verified member; eligibility and email are checked before access is arranged</dd><dt>Availability</dt><dd>Confirmed individually by ELLION; access is not instant</dd><dt>Payment</dt><dd>No payment for this trial. A paid rental requires a separate request</dd></dl>
+        <p>The clock continues while you are signed out or disconnected. Reconnecting does not reset it.</p>
+        <p>Use non-sensitive test data and keep your own copies. The permitted data, environment, end-of-trial access and deletion arrangements will be confirmed before access. This trial does not include a backup service.</p>
+        <a href="index.html#plans">Explore paid GPU plans ↗</a>
+      </aside>
+    </div>
+  </main><footer class="trial-footer wrap">ELLION · NVIDIA RTX A4000 trial applications · <a href="mailto:help@elliongpu.com">help@elliongpu.com</a></footer>
+</body></html>

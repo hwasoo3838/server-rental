@@ -4,7 +4,7 @@
   "description": "ELLION GPU rental website - elliongpu.com",
   "main": "index.html",
   "scripts": {
-    "test": "node tests/automated.test.js && node --test tests/product-mail.test.js tests/backup-billing.test.js",
+    "test": "node tests/automated.test.js && node --test tests/product-mail.test.js tests/backup-billing.test.js tests/a4000-trial.test.js",
     "test:watch": "nodemon tests/automated.test.js"
   },
   "keywords": [

@@ -20,6 +20,16 @@
 
 ## 최근 변경 이력 (역순)
 
+### GPU-010/GPU-006: A4000 NVIDIA 제목·10시간 무료 체험 신청 화면
+
+- 2026-11-12 한국 시간. 최신 원격 운영 main 68ba788 기준 별도 브랜치 feat/a4000-trial-application-20261112. 한국어 사이트/기존 로컬 미커밋 수정은 유지.
+- 변경 전 작업 전체와 운영 원본을 .local-backups/before-a4000-trial-20261112T001819Z/에 SHA-256 manifest와 함께 비공개 보존.
+- 영향 분석: 기존 유료 임대/백업 합산·예약·상품 가격/사양/상태는 보존. A4000 영문 제목만 NVIDIA 접두어 추가, 해당 카드만 10-hour free GPU trial과 별도 전용 링크 추가.
+- a4000-trial.html, assets/a4000-trial.css, assets/a4000-trial.js: 전용 무료 신청 입력·검토·수동 메일/복사·정책 안내. 운영자 승인·용량 확인 조건, 초안=미발송/미접수 구분, 즉시 계정/GPU/시작 시각 미발급. 개인정보 브라우저 저장·POST·광고 전환 없음.
+- index.html 전용 CSS/JS 캐시 버전, sitemap.xml 경로 추가. 테스트 product-mail.test.js, a4000-trial.test.js, browser-a4000-trial.test.cjs와 package.json 연동.
+- npm test 41개 통과·기존 GPU-002 1개 스킵. 신규 브라우저 폼 검증/메일/편집/개인정보 미저장·320/375/768/1440px 및 기존 백업 합산/유료 신청/예약 브라우저 회귀 통과. 실제 고객 신청·메일·결제·GPU 작업 없음.
+- docs/REQUIREMENTS.md, docs/A4000-TRIAL-APPLICATION.md 반영. 151번 기존 8153 임시 미리보기만 최신 사본으로 갱신, 문서/백업/DB 경로 차단 유지. 운영 Push·배포·146 Mock/실제 GPU 연결은 미수행.
+
 ### BACKUP-001/GPU-006: Linux 백업 가격 페이지 및 최초 신청 합산 요금
 
 - 2026-11-12 (한국 시간), 사용자 배포 승인. 원격 main a53c4c7 기준으로 이번 변경만 반영.

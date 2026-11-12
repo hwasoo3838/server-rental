@@ -153,3 +153,18 @@ test('backup add-on combines server and backup on the monthly invoice request', 
   app.open('elgrim-gfx-a4000');
   assert.equal(app.get('#fBackupPlan').value,'none');
 });
+
+test('A4000 alone offers a trial and NVIDIA title without changing paid rent',()=>{
+ const app=boot(null);
+ const cards=app.get('#plans-grid').innerHTML;
+ assert.equal((cards.match(/a4000-trial-offer/g)||[]).length,1);
+ const card=cards.match(/<article[^>]*data-id="elgrim-gfx-a4000"[\s\S]*?<\/article>/)[0];
+ assert.match(card,/NVIDIA RTX A4000 GPU Server/);
+ assert.match(card,/10-hour free GPU trial/);
+ assert.match(card,/href="a4000-trial.html"/);
+ assert.match(card,/data-open="request"/);
+ assert.match(card,/\$199/);
+ app.open('elgrim-gfx-a4000');app.get('#reqForm').listeners.submit({preventDefault(){}});
+ const body=new URL(app.context.location.href).searchParams.get('body');
+ assert.match(body,/NVIDIA RTX A4000 GPU Server/);assert.match(body,/Monthly Price: 199 USD/);
+});

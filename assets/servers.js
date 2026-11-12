@@ -38,7 +38,7 @@ window.SERVERS = [
     accent: "gpu",
     catLabel: "GPU · Bare Metal",
     catLabelKo: "GPU · 베어메탈",
-    name: { ko: "RTX A4000 GPU 서버", en: "RTX A4000 GPU Server" },
+    name: { ko: "RTX A4000 GPU 서버", en: "NVIDIA RTX A4000 GPU Server" },
     location: { ko: "KR · 국내 IDC", en: "KR · Seoul IDC" },
     status: "on-request",
     availability: "on-request",
