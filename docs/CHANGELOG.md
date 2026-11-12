@@ -20,6 +20,15 @@
 
 ## 최근 변경 이력 (역순)
 
+### GPU-010/GPU-006: 무료 테스트 안내를 상품 카드에서 상단으로 이동
+
+- 2026-11-12 한국 시간. 사용자 첨부 화면의 기존 hero 문구를 제거하고 10시간 무료 테스트 안내·신청을 상단으로 이동. 상품 카드의 안내·무료 신청 버튼은 삭제, NVIDIA 제목·유료 상품 정보는 유지.
+- 영향 분석: hero HTML·영문 번역·전용 CSS와 카드 안내 분기만 변경. 일반 신청·예약·백업 합산·가격·사양·상태·무료 테스트 신청 폼/메일 절차는 보존.
+- 수정 전 a539e2f 전체 소스는 .local-backups/before-a4000-hero-20261112T005746Z/에 SHA-256과 함께 비공개 보존.
+- index.html: 기존 Dedicated GPU Servers/AMD MI325X 소개와 네 특징 pill 제거, NVIDIA RTX A4000/10-hour free GPU trial·전용 신청·상품 보기 CTA로 교체. 중복 hero-inner 정리, 기존 장식 배경 유지. assets/i18n.js 영문 hero 키, assets/a4000-trial.css 상단 반응형, assets/app.js 카드 분기 제거. 캐시 버전 갱신.
+- tests/product-mail.test.js, tests/browser-a4000-trial.test.cjs: 상단 CTA/카드 안내 없음/기존 문구 제거 검증으로 갱신. npm test 41개 통과·기존 GPU-002 1개 스킵. Chromium 상단→신청 전체 흐름·개인정보 미저장·320/375/768/1440px 및 기존 유료 신청/백업 합산/예약 회귀 통과. 실제 메일·POST·결제 없음.
+- REQUIREMENTS/A4000-TRIAL-APPLICATION 문서 최신 지시 반영, 기존 8153 미리보기 즉시 갱신. 운영 Push·배포·한국어 사이트·146번 설정 변경 없음.
+
 ### GPU-010/GPU-006: A4000 NVIDIA 제목·10시간 무료 체험 신청 화면
 
 - 2026-11-12 한국 시간. 최신 원격 운영 main 68ba788 기준 별도 브랜치 feat/a4000-trial-application-20261112. 한국어 사이트/기존 로컬 미커밋 수정은 유지.

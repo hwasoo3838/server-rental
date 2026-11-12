@@ -154,14 +154,16 @@ test('backup add-on combines server and backup on the monthly invoice request', 
   assert.equal(app.get('#fBackupPlan').value,'none');
 });
 
-test('A4000 alone offers a trial and NVIDIA title without changing paid rent',()=>{
+test('trial application is in the hero only; NVIDIA title and paid rent are preserved',()=>{
  const app=boot(null);
  const cards=app.get('#plans-grid').innerHTML;
- assert.equal((cards.match(/a4000-trial-offer/g)||[]).length,1);
+ assert.doesNotMatch(cards,/a4000-trial-offer|a4000-trial-button|10-hour free GPU trial/);
+ const hero=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8').match(/<section class="hero hero-trial"[\s\S]*?<\/section>/)[0];
+ assert.match(hero,/10-hour free GPU trial/);
+ assert.match(hero,/href="a4000-trial.html"/);
+ assert.doesNotMatch(hero,/AMD MI325X Reservations|Dedicated GPU Servers|<ul class="pills"/);
  const card=cards.match(/<article[^>]*data-id="elgrim-gfx-a4000"[\s\S]*?<\/article>/)[0];
  assert.match(card,/NVIDIA RTX A4000 GPU Server/);
- assert.match(card,/10-hour free GPU trial/);
- assert.match(card,/href="a4000-trial.html"/);
  assert.match(card,/data-open="request"/);
  assert.match(card,/\$199/);
  app.open('elgrim-gfx-a4000');app.get('#reqForm').listeners.submit({preventDefault(){}});

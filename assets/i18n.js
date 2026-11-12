@@ -100,6 +100,12 @@ window.I18N = {
     "close": "닫기",
   },
   en: {
+    "hero.trialLabel": "NVIDIA RTX A4000 · 16 GB GPU MEMORY",
+    "hero.trialTitle": "NVIDIA RTX A4000.<br/><span style=\"color:#5dffb0\">10-hour free GPU trial.</span>",
+    "hero.trialLead": "Evaluate AI inference, CUDA development and rendering on an NVIDIA RTX A4000. Apply for a free 10-hour trial, with access arranged after approval and capacity confirmation.",
+    "hero.trialApply": "Apply for a free 10-hour trial ↗",
+    "hero.viewServers": "View GPU servers",
+    "hero.trialNote": "The 10-hour period begins with your first authenticated connection after approval and setup.",
     "network.title": "Network Performance",
 
     "status.current": "Bare Metal Servers · PayPal or bank transfer arranged after request confirmation · Contact:",
@@ -109,8 +115,6 @@ window.I18N = {
     "form.usernamePh": "e.g. customer01",
     "form.passwordPolicy": "Initial login credentials will be provided by ELLION. You can change your password after your first login. Never include passwords in your server request.",
     "done.payment": "<p style='margin-top:16px'><strong>Payment Information</strong><br>PayPal or bank transfer can be arranged after request confirmation.</p>",
-    "hero.currentTitle": "Dedicated GPU Servers.<br/><span style=\"color:#5dffb0\">AMD MI325X Reservations.</span>",
-    "hero.currentLead": "Explore dedicated GPU and bare metal servers for AI training, inference, and enterprise workloads. Request availability or register your interest in AMD Instinct MI325X, MI300X, and NVIDIA GPU infrastructure.",
     "hero.hardware": "Dedicated Hardware",
     "hero.servers": "GPU & CPU Servers",
     "hero.root": "Root Access",

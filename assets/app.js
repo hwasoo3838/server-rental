@@ -274,11 +274,6 @@ ${s.networkSnapshot && window.NetworkSnapshot ? `<section class="network-perform
     data-server="${s.id}">
     ${ctaLabel(s)}
   </button>
-  ${s.id === 'elgrim-gfx-a4000' ? `<div class="a4000-trial-offer">
-    <strong>10-hour free GPU trial</strong>
-    <span>Apply for a trial. Access is subject to approval and capacity confirmation.</span>
-    <a class="btn a4000-trial-button" href="a4000-trial.html">Apply for a free 10-hour trial <span aria-hidden="true">↗</span></a>
-  </div>` : ''}
 </div>
 
       </article>`).join("");

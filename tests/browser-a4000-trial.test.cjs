@@ -8,11 +8,16 @@ const root=path.resolve(__dirname,'..');
  page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(r.method()!=='GET')requests.push(r.url());});
  await page.route('**/*',r=>new URL(r.request().url()).hostname==='127.0.0.1'?r.continue():r.abort());
  await page.goto(base+'/');await page.waitForSelector('.plan');if(await page.locator('.cookie-notice button').count())await page.locator('.cookie-notice button').click();
- assert.equal(await page.locator('.plan').count(),7);assert.equal(await page.locator('.a4000-trial-offer').count(),1);
+ assert.equal(await page.locator('.plan').count(),7);assert.equal(await page.locator('.a4000-trial-offer').count(),0);
+ assert.match(await page.locator('.hero h1').innerText(),/NVIDIA RTX A4000\.[\s\S]*10-hour free GPU trial/);
+ assert.doesNotMatch(await page.locator('.hero').innerText(),/AMD MI325X Reservations|Dedicated Hardware|Transparent Pricing/);
+ assert.equal(await page.locator('.plan a[href="a4000-trial.html"]').count(),0);
  const card=page.locator('[data-id="elgrim-gfx-a4000"]');assert.match(await card.locator('h3').innerText(),/^NVIDIA RTX A4000/);assert.match(await card.innerText(),/\$199/);
  for(const width of [320,375,768,1440]){await page.setViewportSize({width,height:1000});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`homepage overflow ${width}`);}
  await card.screenshot({path:'/tmp/ellion-a4000-trial-card.png'});
- await card.locator('a.a4000-trial-button').click();await page.waitForURL('**/a4000-trial.html');
+ await page.locator('.hero').screenshot({path:'/tmp/ellion-a4000-trial-hero-desktop.png'});
+ await page.setViewportSize({width:375,height:900});await page.locator('.hero').screenshot({path:'/tmp/ellion-a4000-trial-hero-mobile.png'});
+ await page.locator('.hero-trial-button').click();await page.waitForURL('**/a4000-trial.html');
  const submit=page.locator('#trial-form button[type="submit"]');await submit.click();assert.equal(await page.locator('#trial-review').isVisible(),false);
  await page.fill('#trialEmail','trial@example.com');await page.fill('#trialName','Example & Co');await page.selectOption('#trialPurpose','CUDA development');await page.fill('#trialDetails','Evaluate inference & memory use with a small model.');
  await submit.click();assert.equal(await page.locator('#trial-review').isVisible(),false);
@@ -29,6 +34,6 @@ const root=path.resolve(__dirname,'..');
  await page.reload();assert.equal(await page.locator('#trialEmail').inputValue(),'');assert.equal(await page.locator('#trial-review').isVisible(),false);
  assert.equal(await page.evaluate(()=>Object.keys(localStorage).some(k=>/trial|email/i.test(k))),false);
  assert.deepEqual(requests,[]);assert.deepEqual(errors,[]);
- console.log('PASS: NVIDIA title/A4000-only CTA, 7 products/$199 preserved, application validation/consent, free-trial email/review/edit invalidation, no PII persistence or POST, 320/375/768/1440px');
+ console.log('PASS: hero-only trial CTA/old hero removed, NVIDIA title/7 products/$199 preserved, application validation/consent, email/review/edit invalidation, no PII persistence or POST, 320/375/768/1440px');
  }finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

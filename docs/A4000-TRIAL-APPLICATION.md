@@ -4,7 +4,7 @@
 
 ## 고객 절차
 
-1. NVIDIA RTX A4000 GPU Server 카드의 `Apply for a free 10-hour trial`을 누른다. 유료 신청 버튼은 별도로 유지한다.
+1. 메인 페이지 상단의 `Apply for a free 10-hour trial`을 누른다. 상품 카드에는 무료 테스트 문구·버튼을 두지 않으며 유료 신청 버튼은 그대로 유지한다.
 2. 전용 페이지에서 이메일·작업 유형·상세·정책 동의를 입력한다. 이름/소속과 희망 날짜/시간대는 선택이다.
 3. `Review my trial application`으로 내용을 확인한다. 이 단계에서는 전송/접수가 발생하지 않는다.
 4. `Open email app to send`로 메일 앱을 열어 help@elliongpu.com에 발송한다. 메일 앱이 없으면 복사 버튼/읽기 전용 신청 내용을 직접 복사해 발송한다.
@@ -15,7 +15,7 @@
 ## 안내 문구
 
 - 상품명: `NVIDIA RTX A4000 GPU Server`
-- 카드 안내: `10-hour free GPU trial`
+- 상단 제목: `NVIDIA RTX A4000. 10-hour free GPU trial.`
 - 버튼: `Apply for a free 10-hour trial`
 - 조건: `Access is subject to approval and capacity confirmation.`
 - 신청 페이지: `Test your workload. 10 hours, on us.`
@@ -31,9 +31,13 @@
 ## 검증
 
 - npm test: 기존 검사 29개 + Node 검사 12개 = 41개 통과, 기존 GPU-002 1개 스킵.
-- 새 Chromium 검사: A4000 전용 버튼 1개/새 이름/7상품/$199 보존, 버튼→전용 신청 경로, 필수 값/동의, 무료 유형 메일, 미발송 안내, 수정 시 초안 무효화, 새로고침 개인정보 미복구, POST/JS 오류 없음, 320/375/768/1440px 통과.
+- 새 Chromium 검사: 상단 전용 버튼 1개/상품 카드 내 무료 테스트 없음/새 이름/7상품/$199 보존, 버튼→전용 신청 경로, 필수 값/동의, 무료 유형 메일, 미발송 안내, 수정 시 초안 무효화, 새로고침 개인정보 미복구, POST/JS 오류 없음, 320/375/768/1440px 통과.
 - 기존 Chromium 회귀: 유료 신청·백업 4옵션/월 합계·메일·상품 변경 초기화·예약 제외·320/375/1440px 통과. 외부 요청/실제 메일 발송 차단.
 - 변경 전 백업: 원래 프로젝트 .local-backups/before-a4000-trial-20261112T001819Z/. manifest SHA-256 포함, 비공개.
 - 임시 미리보기: http://115.71.3.151:8153/a4000-trial.html . 공개 운영 사이트 배포는 별도 승인 전 미수행.
 
 실제 수신/계정 발급/CUDA 실행/자동 만료 검증 결과가 아니다. 고객 파일·비밀번호·개인키는 신청에 넣지 않도록 안내한다.
+
+## 상단 배치 수정 (2026-11-12)
+
+사용자 화면 지시에 따라 기존 hero의 Dedicated GPU Servers/AMD MI325X 제목·설명과 Dedicated Hardware/GPU & CPU Servers/Root Access/Transparent Pricing pill을 제거했다. 동일 디자인 배경을 유지하며 NVIDIA RTX A4000/10-hour free GPU trial/신청 버튼/유료 상품 보기로 교체했다. 회원·용량 승인 조건과 기존 전용 신청 절차는 유지했다. 수정 전 사본은 원래 프로젝트 .local-backups/before-a4000-hero-20261112T005746Z/에 보존했다.
