@@ -1,5 +1,11 @@
 # ELLION GPU 해외 사이트 - 변경 이력
 
+## 2026-11-20 · 해외 사이트 홈 링크 정규화 (GPU-006, GPU-007, GPU-010)
+
+- 백업 및 RTX A4000 무료 체험 페이지의 홈 링크를 `/`로, 상품 목록 링크를 `/#plans`로 정규화했다.
+- 공개 페이지 4개의 HTTPS canonical 및 사이트맵 주소를 유지한다. 운영 배포와 HTTPS 강제 설정은 별도 승인 대상이다.
+
+
 **프로젝트**: gpu-rental-global  
 **GitHub**: hwasoo3838/server-rental  
 **운영 사이트**: https://elliongpu.com  
